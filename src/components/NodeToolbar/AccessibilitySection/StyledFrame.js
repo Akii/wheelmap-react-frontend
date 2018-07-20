@@ -2,7 +2,6 @@
 
 import styled from 'styled-components';
 import colors from '../../../lib/colors';
-
 import triangle from './triangle.svg';
 
 const StyledFrame = styled.summary`
