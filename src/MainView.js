@@ -317,14 +317,18 @@ class MainView extends React.Component<Props, State> {
   }
 
   renderOnboarding({ isLocalizationLoaded }: { isLocalizationLoaded: boolean }) {
-    if (!isLocalizationLoaded && this.props.isOnboardingVisible) {
+    const { isOnboardingVisible, onCloseOnboarding, clientSideConfiguration } = this.props;
+    const onboardingHeaderMarkdown = clientSideConfiguration.textContent.onboarding.headerMarkdown;
+
+    if (!isLocalizationLoaded && isOnboardingVisible) {
       return <Dots size={36} color={colors.colorizedBackgroundColor} />;
     }
 
     return (
       <Onboarding
-        isVisible={isLocalizationLoaded && this.props.isOnboardingVisible}
-        onClose={this.props.onCloseOnboarding}
+        isVisible={isLocalizationLoaded && isOnboardingVisible}
+        onClose={onCloseOnboarding}
+        headerMarkdown={onboardingHeaderMarkdown}
       />
     );
   }
