@@ -51,6 +51,24 @@ import type { PhotoModel } from './components/NodeToolbar/Photos/PhotoModel';
 
 initReactFastclick();
 
+export type Link = {
+  label: string,
+  url: string,
+};
+
+export type ClientSideConfiguration = {
+  allowedBaseURLs: Array<string>,
+  includeSourceIds: Array<string>,
+  excludeSourceIds: Array<string>,
+  textContent: {
+    onboarding: {
+      headerMarkdown: string,
+    },
+  },
+  customMainMenuLinks: Array<Link>,
+  addPlaceURL: string,
+};
+
 type Props = {
   className: string,
   history: RouterHistory,
@@ -89,6 +107,8 @@ type State = {
   photoFlowNotification?: string,
   photoFlowErrorMessage: ?string,
   photoMarkedForReport: PhotoModel | null,
+
+  clientSideConfiguration: ClientSideConfiguration,
 };
 
 function parseStatusString(statusString, allowedStatuses) {
@@ -161,6 +181,16 @@ class Loader extends React.Component<Props, State> {
     photosMarkedForUpload: null,
     photoMarkedForReport: null,
     photoFlowErrorMessage: null,
+    clientSideConfiguration: {
+      allowedBaseURLs: ['https://www.wheelmap-pro.com'],
+      includeSourceIds: ['LiBTS67TjmBcXdEmX'],
+      excludeSourceIds: [],
+      textContent: { onboarding: { headerMarkdown: '**hallo**' } },
+      customMainMenuLinks: [
+        { label: 'Terms of Service', url: 'https://wheelmap.org/nutzungsbedingungen' },
+      ],
+      addPlaceURL: 'https://www.openstreetmap.org/edit#map=19/48.85920/2.34540',
+    },
   };
 
   map: ?any;
@@ -730,6 +760,8 @@ class Loader extends React.Component<Props, State> {
 
       // simple 3-button status editor feature
       presetStatus: getQueryParams(this.props.history.location.search).presetStatus || null,
+
+      clientSideConfiguration: this.state.clientSideConfiguration,
     };
 
     return (
