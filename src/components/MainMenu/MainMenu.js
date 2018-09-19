@@ -2,18 +2,16 @@
 import * as React from 'react';
 import { hsl } from 'd3-color';
 import styled from 'styled-components';
-import queryString from 'query-string';
 import Logo from '../../lib/Logo';
 import CloseIcon from '../icons/actions/Close';
 import colors from '../../lib/colors';
-import { getQueryParams } from '../../lib/queryParams';
 import { t } from 'ttag';
 import GlobalActivityIndicator from './GlobalActivityIndicator';
 import { Dots } from 'react-activity';
 import strings from './strings';
-import { Link } from 'react-router-dom';
 import type { RouterHistory } from 'react-router-dom';
 import FocusTrap from '@sozialhelden/focus-trap-react';
+import type { Link } from '../../App';
 
 type State = {
   isMenuButtonVisible: boolean,
@@ -28,6 +26,8 @@ type Props = {
   lon: string,
   zoom: string,
   history: RouterHistory,
+  links: Array<Link>,
+  addPlaceURL: string,
 };
 
 function MenuIcon(props) {
@@ -106,7 +106,7 @@ class MainMenu extends React.Component<Props, State> {
       findWheelchairAccessiblePlaces,
     } = strings();
 
-    const { isLocalizationLoaded, isOpen, className } = this.props;
+    const { isLocalizationLoaded, isOpen, className, links, addPlaceURL } = this.props;
     const { isMenuButtonVisible } = this.state;
 
     const classList = [
@@ -164,38 +164,15 @@ class MainMenu extends React.Component<Props, State> {
         </button>
 
         <div id="main-menu" role="menu">
-          <a className="nav-link" href="https://travelable.info" role="menuitem">
-            {travelGuide}
-          </a>
-          <a
-            className="nav-link"
-            href="https://news.wheelmap.org/wheelmap-botschafter"
-            role="menuitem"
-          >
-            {getInvolved}
-          </a>
-          <a className="nav-link" href="https://news.wheelmap.org" role="menuitem">
-            {news}
-          </a>
-          <a className="nav-link" href="https://news.wheelmap.org/presse" role="menuitem">
-            {press}
-          </a>
-          <a className="nav-link" href="https://news.wheelmap.org/kontakt" role="menuitem">
-            {contact}
-          </a>
-          <a className="nav-link" href="https://news.wheelmap.org/imprint" role="menuitem">
-            {imprint}
-          </a>
-          <a className="nav-link" href="https://news.wheelmap.org/faq" role="menuitem">
-            {faq}
-          </a>
-          <Link
-            className="nav-link add-place-link"
-            to={`/beta/nodes/new?${queryString.stringify(getQueryParams())}`}
-            role="menuitem"
-          >
+          {links.map(link => (
+            <a className="nav-link" href={link.url} role="menuitem">
+              {link.label}
+            </a>
+          ))}
+
+          <a className="nav-link add-place-link" href={addPlaceURL} role="menuitem">
             {addMissingPlace}
-          </Link>
+          </a>
         </div>
       </FocusTrap>
     );

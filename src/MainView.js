@@ -44,6 +44,8 @@ import { isTouchDevice } from './lib/userAgent';
 
 import type { PhotoModel } from './components/NodeToolbar/Photos/PhotoModel';
 
+import type { ClientSideConfiguration } from './App.js';
+
 type Props = {
   className: string,
 
@@ -114,6 +116,8 @@ type Props = {
   photoFlowNotification?: string,
   photoFlowErrorMessage: ?string,
   photoMarkedForReport: PhotoModel | null,
+
+  clientSideConfiguration: ClientSideConfiguration,
 };
 
 type State = {
@@ -336,13 +340,18 @@ class MainView extends React.Component<Props, State> {
   }
 
   renderMainMenu({ isLocalizationLoaded, lat, lon, zoom }: $Shape<Props>) {
+    const { isMainMenuOpen, onToggleMainMenu, history, clientSideConfiguration } = this.props;
+    const { customMainMenuLinks, addPlaceURL } = clientSideConfiguration;
+
     return (
       <MainMenu
         className="main-menu"
-        isOpen={this.props.isMainMenuOpen}
-        onToggle={this.props.onToggleMainMenu}
+        isOpen={isMainMenuOpen}
+        onToggle={onToggleMainMenu}
         isLocalizationLoaded={isLocalizationLoaded}
-        history={this.props.history}
+        history={history}
+        links={customMainMenuLinks}
+        addPlaceURL={addPlaceURL}
         {...{ lat, lon, zoom }}
       />
     );
