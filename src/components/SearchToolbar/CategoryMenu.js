@@ -42,6 +42,7 @@ type Props = {
   hidden: boolean,
   onFocus: () => void,
   onBlur: () => void,
+  categories: string[],
   category: ?string,
   accessibilityFilter?: YesNoLimitedUnknown[],
   toiletFilter?: YesNoUnknown[],
@@ -54,8 +55,16 @@ export default function CategoryMenu(props: Props) {
     names = { [props.category]: Categories.translatedWheelmapRootCategoryName(props.category) };
   } else {
     names = Categories.getTranslatedRootCategoryNames();
+    const foo = props.categories.reduce((memo, element) => {
+      memo[element] = names[Categories.wheelmapRootCategoryNameForACParentCategoryName(element)];
+      return memo;
+    }, {});
+
+    names = foo;
   }
   const showCloseButton = Boolean(props.category);
+
+  // debugger; //eslint-disable-line
 
   return (
     <Container className="category-menu">

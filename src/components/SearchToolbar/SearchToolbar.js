@@ -20,6 +20,7 @@ import AccessibilityFilterMenu from './AccessibilityFilterMenu';
 import colors from '../../lib/colors';
 import { isFiltered } from '../../lib/Feature';
 import searchPlaces from '../../lib/searchPlaces';
+import Categories from '../../lib/Categories';
 import type { SearchResultCollection } from '../../lib/searchPlaces';
 import type { PlaceFilter } from './AccessibilityFilterModel';
 import { isOnSmallViewport } from '../../lib/ViewportSize';
@@ -47,6 +48,7 @@ export type Props = PlaceFilter & {
   history: RouterHistory,
   hidden: boolean,
   inert: boolean,
+  categories: string[],
   category: ?string,
   searchQuery: ?string,
   lat: ?number,
@@ -413,7 +415,7 @@ export default class SearchToolbar extends React.Component<Props, State> {
 
   renderCategoryMenu() {
     if (!this.props.category && !this.props.isExpanded) return null;
-
+    console.log('synonym cache', Categories.synonymCache);
     return (
       <CategoryMenu
         hidden={this.props.hidden}
@@ -422,6 +424,7 @@ export default class SearchToolbar extends React.Component<Props, State> {
         onBlur={() => {
           setTimeout(() => this.setState({ isCategoryFocused: false }));
         }}
+        categories={this.props.categories}
         category={this.props.category}
         accessibilityFilter={this.props.accessibilityFilter}
       />

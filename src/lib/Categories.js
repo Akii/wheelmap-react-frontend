@@ -4,6 +4,7 @@ import { globalFetchManager } from './FetchManager';
 import { t } from 'ttag';
 import { translatedStringFromObject } from './i18n';
 import ResponseError from './ResponseError';
+import invert from 'lodash/invert';
 
 export type ACCategory = {
   _id: string,
@@ -77,6 +78,7 @@ export default class Categories {
   }
 
   static getCategoryFromCache(idOrSynonym) {
+    // debugger; //eslint-disable-line
     return this.synonymCache[idOrSynonym];
   }
 
@@ -114,6 +116,31 @@ export default class Categories {
 
   static translatedWheelmapRootCategoryName(name: string) {
     return this.getTranslatedRootCategoryNames()[name];
+  }
+
+  static acParentCategoryNameForWheelmapRootCategoryName(wheelmapRootCategoryName: string) {
+    return Categories.wheelmapRootCategoryNamesToACParentCategoryNames[wheelmapRootCategoryName];
+  }
+
+  static wheelmapRootCategoryNamesToACParentCategoryNames = {
+    accommodation: 'accomodation',
+    education: 'education',
+    food: 'food',
+    government: 'official',
+    health: 'health',
+    leisure: 'leisure',
+    misc: 'other',
+    money_post: 'money',
+    public_transfer: 'transport',
+    shopping: 'shopping',
+    sport: 'sport',
+    tourism: 'tourism',
+  };
+
+  static wheelmapRootCategoryNameForACParentCategoryName(acParentCategoryName: string) {
+    return invert(Categories.wheelmapRootCategoryNamesToACParentCategoryNames)[
+      acParentCategoryName
+    ];
   }
 
   static fetchOnce(options: {

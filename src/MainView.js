@@ -44,7 +44,7 @@ import { isTouchDevice } from './lib/userAgent';
 
 import type { PhotoModel } from './components/NodeToolbar/Photos/PhotoModel';
 
-import type { ClientSideConfiguration } from './App.js';
+import type { ClientSideConfiguration, AccessibilityCloudSource } from './App.js';
 
 type Props = {
   className: string,
@@ -118,6 +118,7 @@ type Props = {
   photoMarkedForReport: PhotoModel | null,
 
   clientSideConfiguration: ClientSideConfiguration,
+  categories: string[],
 };
 
 type State = {
@@ -270,6 +271,7 @@ class MainView extends React.Component<Props, State> {
         history={this.props.history}
         hidden={!this.props.isSearchBarVisible}
         inert={isInert}
+        categories={this.props.categories}
         category={category}
         searchQuery={searchQuery}
         accessibilityFilter={this.props.accessibilityFilter}

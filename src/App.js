@@ -17,6 +17,8 @@ import { isTouchDevice } from './lib/userAgent';
 
 import MainView, { UnstyledMainView } from './MainView';
 
+import sourcesJSON from './sources.json';
+
 import type {
   Feature,
   WheelmapFeature,
@@ -47,9 +49,43 @@ import { getQueryParams } from './lib/queryParams';
 import type { ModalNodeState } from './lib/queryParams';
 import getRouteInformation from './lib/getRouteInformation';
 
+import Categories from './lib/Categories';
 import type { PhotoModel } from './components/NodeToolbar/Photos/PhotoModel';
 
 initReactFastclick();
+
+const getParentCategoriesFromSources = sourcesJSON => {
+  const displayedCategoriesSet = sourcesJSON.results
+    .map(result => result.attributeDistribution)
+    .filter(Boolean)
+    .map(JSON.parse)
+    .map(attributeDistribution => attributeDistribution.properties.properties.category)
+    .filter(Boolean)
+    .map(Object.keys)
+    .reduce((set, array) => {
+      array.forEach(e => set.add(e));
+      return set;
+    }, new Set());
+
+  let foo = Array.from(displayedCategoriesSet);
+  console.log('before mapping', foo);
+
+  foo = foo
+    .map(category => Categories.getCategoryFromCache(category))
+    .filter(Boolean)
+    .map(element => element.parentIds[0])
+    .filter(Boolean);
+
+  const displayedCategories = new Set();
+
+  foo.forEach(f => displayedCategories.add(f));
+
+  foo = Array.from(displayedCategories);
+
+  console.log(foo);
+
+  return foo;
+};
 
 export type Link = {
   label: string,
@@ -68,6 +104,11 @@ export type ClientSideConfiguration = {
   },
   customMainMenuLinks: Array<Link>,
   addPlaceURL: string,
+};
+
+export type AccessibilityCloudSource = {
+  _id: string,
+  attributeDistribution: string,
 };
 
 type Props = {
@@ -110,6 +151,7 @@ type State = {
   photoMarkedForReport: PhotoModel | null,
 
   clientSideConfiguration: ClientSideConfiguration,
+  categories: string[],
 };
 
 function parseStatusString(statusString, allowedStatuses) {
@@ -193,6 +235,7 @@ class Loader extends React.Component<Props, State> {
       ],
       addPlaceURL: 'https://www.openstreetmap.org/edit#map=19/48.85920/2.34540',
     },
+    categories: [],
   };
 
   map: ?any;
@@ -215,6 +258,10 @@ class Loader extends React.Component<Props, State> {
     loadExistingLocalizationByPreference().then(() =>
       this.setState({ isLocalizationLoaded: true })
     );
+
+    Categories.fetchOnce(config).then(() => {
+      this.setState({ categories: getParentCategoriesFromSources(sourcesJSON) });
+    });
   }
 
   componentWillUnmount() {
@@ -764,6 +811,7 @@ class Loader extends React.Component<Props, State> {
       presetStatus: getQueryParams(this.props.history.location.search).presetStatus || null,
 
       clientSideConfiguration: this.state.clientSideConfiguration,
+      categories: this.state.categories,
     };
 
     return (
