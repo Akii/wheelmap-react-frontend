@@ -13,6 +13,7 @@ import {
 import { licenseCache } from '../lib/cache/LicenseCache';
 import { dataSourceCache } from '../lib/cache/DataSourceCache';
 import { wheelmapFeatureCache } from '../lib/cache/WheelmapFeatureCache';
+import { wheelmapLightweightFeatureCache } from '../lib/cache/WheelmapLightweightFeatureCache';
 import { accessibilityCloudFeatureCache } from '../lib/cache/AccessibilityCloudFeatureCache';
 import { equipmentInfoCache } from '../lib/cache/EquipmentInfoCache';
 import {
@@ -90,6 +91,8 @@ const PlaceDetailsData: DataTableEntry<PlaceDetailsProps> = {
       const featurePromise = fetchFeature(featureId, useCache);
       const feature = isServer ? await featurePromise : featurePromise;
 
+      const lightweightFeature = wheelmapLightweightFeatureCache.getCachedFeature(featureId);
+
       // console.log("loaded", feature, { useCache, feature });
 
       const equipmentPromise = equipmentInfoId ? fetchEquipment(equipmentInfoId, useCache) : null;
@@ -106,7 +109,7 @@ const PlaceDetailsData: DataTableEntry<PlaceDetailsProps> = {
         feature,
         featureId,
         sources,
-        lightweightFeature: null,
+        lightweightFeature,
         equipmentInfoId,
         equipmentInfo,
       };
