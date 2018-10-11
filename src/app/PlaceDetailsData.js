@@ -159,7 +159,7 @@ const PlaceDetailsData: DataTableEntry<PlaceDetailsProps> = {
 
   getHead(props) {
     const { feature, clientSideConfiguration } = props;
-    const { name: productName, twitter } = clientSideConfiguration.textContent.product;
+    const { textContent, meta } = clientSideConfiguration;
 
     const renderTitle = feature => {
       let extras;
@@ -176,7 +176,7 @@ const PlaceDetailsData: DataTableEntry<PlaceDetailsProps> = {
         }
 
         const coordinates = normalizedCoordinatesForFeature(feature);
-        const thisPlaceIsOn = t`This place is on ${productName}: ${placeTitle}`;
+        const thisPlaceIsOn = t`This place is on ${textContent.product.name}: ${placeTitle}`;
 
         extras = [
           coordinates != null && (
@@ -200,7 +200,7 @@ const PlaceDetailsData: DataTableEntry<PlaceDetailsProps> = {
           />,
           placeTitle && <meta content={thisPlaceIsOn} property="og:title" key="og:title" />,
           placeTitle &&
-            (twitter.siteHandle || twitter.creatorHandle) && (
+            (meta.twitter.siteHandle || meta.twitter.creatorHandle) && (
               <meta content={thisPlaceIsOn} property="twitter:title" key="twitter:title" />
             ),
         ];
