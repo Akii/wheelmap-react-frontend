@@ -6,7 +6,7 @@ import env from '../env';
 
 export default class WheelmapFeaturePhotosCache extends URLDataCache<?WheelmapFeaturePhotos> {
   getPhotosForFeature(
-    featureId: string,
+    featureId: string | number,
     options: { useCache: boolean } = { useCache: true }
   ): Promise<?WheelmapFeaturePhotos> {
     const wheelmapApiBaseUrl = env.public.wheelmap.baseUrl
