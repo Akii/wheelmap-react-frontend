@@ -136,12 +136,17 @@ class Loader extends React.Component<Props, State> {
   static getDerivedStateFromProps(props: Props): $Shape<State> {
     const state = {
       isSearchToolbarExpanded: false,
-      isSearchBarVisible: isStickySearchBarSupported(),
+      isSearchBarVisible: false,
     };
 
     // close search results when leaving search route
     if (props.routeName === 'search') {
       state.isSearchToolbarExpanded = true;
+      state.isSearchBarVisible = true;
+    }
+
+    if (props.routeName === 'place_detail') {
+      state.isSearchBarVisible = false;
     }
 
     return state;
@@ -173,6 +178,7 @@ class Loader extends React.Component<Props, State> {
     const params = this.getCurrentParams();
 
     this.props.routerHistory.push('search', params);
+    if (this.mainView) this.mainView.focusSearchToolbar();
   }
 
   closeSearch() {
@@ -224,7 +230,6 @@ class Loader extends React.Component<Props, State> {
   onMapClick = () => {
     if (this.state.isSearchToolbarExpanded) {
       this.closeSearch();
-      this.setState({ isMainMenuOpen: false, isSearchToolbarExpanded: false });
       this.mainView.focusMap();
     }
   };
@@ -467,19 +472,6 @@ class Loader extends React.Component<Props, State> {
       params.toilet = toiletFilter.join(',');
     }
 
-    if (searchQuery) {
-      params.q = searchQuery;
-    }
-
-    if (routeName === 'place_detail') {
-      params.id = featureId;
-    }
-
-    if (routeName === 'equipment') {
-      params.id = featureId;
-      params.eid = equipmentInfoId;
-    }
-
     return params;
   }
 
@@ -512,11 +504,8 @@ class Loader extends React.Component<Props, State> {
   };
 
   onCloseSearchToolbar = () => {
-    this.props.routerHistory.replace('map');
-    this.setState({
-      isSearchBarVisible: isStickySearchBarSupported(),
-      isSearchToolbarExpanded: false,
-    });
+    this.closeSearch();
+
     if (this.mainView) this.mainView.focusMap();
   };
 
@@ -602,7 +591,8 @@ class Loader extends React.Component<Props, State> {
     const shouldLocateOnStart =
       !isNodeRoute && +new Date() - (savedState.map.lastMoveDate || 0) > config.locateTimeout;
 
-    const isSearchButtonVisible: boolean = !this.state.isSearchBarVisible;
+    const isSearchBarVisible = this.state.isSearchBarVisible;
+    const isSearchButtonVisible = !isSearchBarVisible;
 
     const extraProps = {
       history: this.props.history,
@@ -613,6 +603,7 @@ class Loader extends React.Component<Props, State> {
       isNodeToolbarDisplayed,
       shouldLocateOnStart,
       isSearchButtonVisible,
+      isSearchBarVisible,
 
       featureId: this.props.featureId,
       feature: this.props.feature,
@@ -633,7 +624,6 @@ class Loader extends React.Component<Props, State> {
       extent: this.state.extent || this.props.extent,
       isOnboardingVisible: this.state.isOnboardingVisible,
       isMainMenuOpen: this.state.isMainMenuOpen,
-      isSearchBarVisible: this.state.isSearchBarVisible,
       isOnSmallViewport: this.state.isOnSmallViewport,
       isSearchToolbarExpanded: this.state.isSearchToolbarExpanded,
       searchResults: this.props.searchResults,
