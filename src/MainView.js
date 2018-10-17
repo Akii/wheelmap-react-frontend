@@ -73,8 +73,6 @@ type Props = {
   searchResults: ?SearchResultCollection | ?Promise<SearchResultCollection>,
 
   onSearchResultClick: (feature: SearchResultFeature, wheelmapFeature: ?WheelmapFeature) => void,
-  onCategorySelect: () => void,
-  onCategoryReset: () => void,
   onSearchToolbarClick: () => void,
   onSearchToolbarClose: () => void,
   onSearchToolbarSubmit: (searchQuery: string) => void,
@@ -270,8 +268,6 @@ class MainView extends React.Component<Props, State> {
         onChangeSearchQuery={this.props.onSearchQueryChange}
         onAccessibilityFilterButtonClick={this.props.onAccessibilityFilterButtonClick}
         onSearchResultClick={this.props.onSearchResultClick}
-        onCategorySelect={this.props.onCategorySelect}
-        onCategoryReset={this.props.onCategoryReset}
         onClick={this.props.onSearchToolbarClick}
         onSubmit={this.props.onSearchToolbarSubmit}
         onClose={this.props.onSearchToolbarClose}
