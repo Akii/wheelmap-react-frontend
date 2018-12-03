@@ -82,8 +82,6 @@ export default class ReportProblemButton extends React.Component<Props> {
           <a
             href="https://wiki.openstreetmap.org/wiki/Key:disused:"
             ref={howToLink => (this.howToLink = howToLink)}
-            target="_blank"
-            rel="noopener noreferrer"
           >
             {osmPermanentlyClosedHowtoLinkCaption}
           </a>
@@ -97,8 +95,6 @@ export default class ReportProblemButton extends React.Component<Props> {
           className="link-button"
           ref={editLink => (this.editLink = editLink)}
           onKeyDown={this.trapFocus}
-          target="_blank"
-          rel="noopener noreferrer"
         >
           {editButtonCaption}
         </a>
@@ -107,8 +103,6 @@ export default class ReportProblemButton extends React.Component<Props> {
           className="link-button"
           ref={noteLink => (this.noteLink = noteLink)}
           onKeyDown={this.trapFocus}
-          target="_blank"
-          rel="noopener noreferrer"
         >
           {noteButtonCaption}
         </a>
