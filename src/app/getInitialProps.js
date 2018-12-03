@@ -22,7 +22,6 @@ import { categoriesCache } from '../lib/cache/CategoryLookupTablesCache';
 import SearchData from './SearchData';
 import PlaceDetailsData from './PlaceDetailsData';
 import MapData from './MapData';
-import CreatePlaceData from './CreatePlaceData';
 
 export type AppProps = {
   userAgent: UAResult,
@@ -64,7 +63,6 @@ const dataTable: DataTable = Object.freeze({
   search: SearchData,
   map: MapData,
   equipment: PlaceDetailsData,
-  createPlace: CreatePlaceData,
 });
 
 export function getInitialRouteProps(

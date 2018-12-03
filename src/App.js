@@ -151,8 +151,6 @@ class App extends React.Component<Props, State> {
     if (props.routeName === 'createPlace' && state.modalNodeState !== 'create') {
       newState.modalNodeState = 'create';
       trackModalView('create');
-    } else {
-      newState.modalNodeState = null;
     }
 
     if (props.routeName === 'placeDetail' || props.routeName === 'equipment') {
@@ -523,11 +521,6 @@ class App extends React.Component<Props, State> {
     }
   };
 
-  onCloseCreatePlaceDialog = () => {
-    const params = this.getCurrentParams();
-    this.props.routerHistory.push('map', params);
-  };
-
   onCloseOnboarding = () => {
     saveState({ onboardingCompleted: 'true' });
     this.setState({ isOnboardingVisible: false });
@@ -718,7 +711,7 @@ class App extends React.Component<Props, State> {
           onSearchToolbarClick={this.onSearchToolbarClick}
           onSearchToolbarClose={this.onSearchToolbarClose}
           onSearchToolbarSubmit={this.onSearchToolbarSubmit}
-          onCloseCreatePlaceDialog={this.onCloseCreatePlaceDialog}
+          onCloseCreatePlaceDialog={this.onCloseNodeToolbar}
           onOpenWheelchairAccessibility={this.onOpenWheelchairAccessibility}
           onOpenToiletAccessibility={this.onOpenToiletAccessibility}
           onSelectWheelchairAccessibility={this.onSelectWheelchairAccessibility}

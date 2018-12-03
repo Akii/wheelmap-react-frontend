@@ -18,7 +18,7 @@ const routes = [
     path: '/categories/:category',
   },
   {
-    name: 'createPlace',
+    name: 'addPlace',
     path: '/add-place',
   },
   {

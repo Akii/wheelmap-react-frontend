@@ -27,6 +27,7 @@ type Props = {
   logoURL: string,
   claim: LocalizedString,
   links: Array<Link>,
+  addPlaceURL: string,
 };
 
 function MenuIcon(props) {
