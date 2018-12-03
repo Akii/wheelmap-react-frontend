@@ -9,9 +9,8 @@ import CloseIcon from '../icons/actions/Close';
 import colors from '../../lib/colors';
 import { t } from 'ttag';
 import GlobalActivityIndicator from './GlobalActivityIndicator';
-import type { LinkData } from '../../App';
+import type { Link } from '../../App';
 import { translatedStringFromObject, type LocalizedString } from '../../lib/i18n';
-import Link, { RouteConsumer } from '../Link/Link';
 
 type State = {
   isMenuButtonVisible: boolean,
@@ -27,7 +26,7 @@ type Props = {
   zoom: string,
   logoURL: string,
   claim: LocalizedString,
-  links: Array<LinkData>,
+  links: Array<Link>,
 };
 
 function MenuIcon(props) {
@@ -124,19 +123,6 @@ class MainMenu extends React.Component<Props, State> {
       const label = translatedStringFromObject(link.label);
       const classNamesFromTags = link.tags && link.tags.map(tag => `${tag}-link`);
       const className = ['nav-link'].concat(classNamesFromTags).join(' ');
-
-      if (url && url === '/add-place') {
-        return (
-          <RouteConsumer>
-            {context => (
-              <Link routeName="createPlace" params={context.params}>
-                {label}
-              </Link>
-            )}
-          </RouteConsumer>
-        );
-      }
-
       return (
         <a key={url} className={className} href={url} role="menuitem">
           {label}

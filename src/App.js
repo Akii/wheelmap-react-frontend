@@ -46,7 +46,7 @@ import { trackModalView } from './lib/Analytics';
 
 initReactFastclick();
 
-export type LinkData = {
+export type Link = {
   label: LocalizedString,
   url: LocalizedString,
   order?: number,
