@@ -151,9 +151,7 @@ class App extends React.Component<Props, State> {
     if (props.routeName === 'createPlace') {
       newState.modalNodeState = 'create';
       trackModalView('create');
-    }
-
-    if (props.routeName === 'map') {
+    } else {
       newState.modalNodeState = null;
     }
 
