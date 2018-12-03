@@ -59,7 +59,7 @@ type DataTable = {
 };
 
 const dataTable: DataTable = Object.freeze({
-  placeDetail: PlaceDetailsData,
+  place_detail: PlaceDetailsData,
   search: SearchData,
   map: MapData,
   equipment: PlaceDetailsData,
