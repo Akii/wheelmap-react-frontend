@@ -125,13 +125,23 @@ class MainMenu extends React.Component<Props, State> {
       const classNamesFromTags = link.tags && link.tags.map(tag => `${tag}-link`);
       const className = ['nav-link'].concat(classNamesFromTags).join(' ');
 
-      if (typeof url === 'string') {
+      if (url && url === '/add-place') {
         return (
-          <Link key={url} className={className} to={url} role="menuitem">
-            {label}
-          </Link>
+          <RouteConsumer>
+            {context => (
+              <Link key={url} routeName="createPlace" params={context.params}>
+                {label}
+              </Link>
+            )}
+          </RouteConsumer>
         );
       }
+
+      return (
+        <a key={url} className={className} href={url} role="menuitem">
+          {label}
+        </a>
+      );
     });
   }
 

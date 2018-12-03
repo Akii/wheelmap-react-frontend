@@ -1,26 +1,23 @@
 // @flow
-import * as React from 'react';
-import isUrl from 'is-url';
+import React, { Component } from 'react';
 
 import { type RouterHistory, type RouteParams } from '../../lib/RouterHistory';
 import { type RouteContext, RouteConsumer, RouteProvider } from './RouteContext';
 
 type Props = {
-  to: string,
+  routeName: string,
   replace?: boolean,
   params?: RouteParams,
-  children?: React.Node,
   onClick?: (event: SyntheticEvent<HTMLLinkElement>) => void,
 };
 
-class Link extends React.Component<Props> {
+class Link extends Component<Props> {
   handleClick(
-    routeName: string,
     history: RouterHistory,
     params?: RouteParams,
     event: SyntheticEvent<HTMLLinkElement>
   ) {
-    const { replace, onClick } = this.props;
+    const { routeName, replace, onClick } = this.props;
 
     if (onClick) {
       onClick(event);
@@ -39,44 +36,27 @@ class Link extends React.Component<Props> {
     }
   }
 
-  renderInternalLink = (routeName: string) => {
-    const { params, children, ...props } = this.props;
+  renderLink = (context: RouteContext) => {
+    const { history } = context;
+    const { routeName, params, ...props } = this.props;
+    const href = history.generatePath(routeName, params);
 
     delete props.replace;
 
     return (
-      <RouteConsumer>
-        {(context: RouteContext) => (
-          <a
-            {...props}
-            href={context.history.generatePath(routeName, context.params)}
-            onClick={(event: SyntheticEvent<HTMLLinkElement>) => {
-              this.handleClick(routeName, context.history, context.params, event);
-            }}
-          >
-            {children}
-          </a>
-        )}
-      </RouteConsumer>
+      // eslint-disable-next-line jsx-a11y/anchor-has-content
+      <a
+        {...props}
+        href={href}
+        onClick={event => {
+          this.handleClick(history, params, event);
+        }}
+      />
     );
   };
 
-  renderExternalLink = (to: string) => (
-    <a {...this.props} href={to}>
-      {this.props.children}
-    </a>
-  );
-
   render() {
-    const { to } = this.props;
-
-    if (isUrl(to)) {
-      return this.renderExternalLink(to);
-    } else if (typeof to === 'string') {
-      return this.renderInternalLink(to);
-    }
-
-    return null;
+    return <RouteConsumer>{this.renderLink}</RouteConsumer>;
   }
 }
 

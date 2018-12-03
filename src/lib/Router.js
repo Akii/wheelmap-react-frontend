@@ -80,10 +80,11 @@ class Router {
     return { params, query };
   }
 
-  getRoute(nameOrPath, strict = false) {
-    const route = this.routes.find(route => route.name === nameOrPath || route.path === nameOrPath);
+  getRoute(name, strict = false) {
+    const route = this.routes.find(route => route.name === name);
+
     if (strict && !route) {
-      throw new Error(`Unknown route: ${nameOrPath}.`);
+      throw new Error(`Unknown route: ${name}.`);
     }
 
     return route;
