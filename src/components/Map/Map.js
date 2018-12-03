@@ -845,22 +845,14 @@ export default class Map extends React.Component<Props, State> {
         </a>
         <span className="mapbox-attribution-container">
           <span className="sozialhelden-logo-container">
-            <a href="https://www.sozialhelden.de" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.sozialhelden.de">
               <SozialheldenLogo />
               &nbsp;|&nbsp;
             </a>
           </span>
-          <a href="https://www.mapbox.com/about/maps/" target="_blank" rel="noopener noreferrer">
-            © Mapbox |
-          </a>
+          <a href="https://www.mapbox.com/about/maps/">© Mapbox |</a>
           &nbsp;
-          <a
-            href="http://www.openstreetmap.org/copyright"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            © OpenStreetMap |
-          </a>
+          <a href="http://www.openstreetmap.org/copyright">© OpenStreetMap |</a>
           &nbsp;
           <a href="https://www.mapbox.com/map-feedback/" target="_blank" rel="noopener noreferrer">
             <strong>Improve this map</strong>
