@@ -40,27 +40,23 @@ class Link extends React.Component<Props> {
   }
 
   renderInternalLink = (routeName: string) => {
-    const { children, ...props } = this.props;
+    const { params, children, ...props } = this.props;
 
     delete props.replace;
 
     return (
       <RouteConsumer>
-        {(context: RouteContext) => {
-          const params = this.props.params || context.params;
-
-          return (
-            <a
-              {...props}
-              href={context.history.generatePath(routeName, params)}
-              onClick={(event: SyntheticEvent<HTMLLinkElement>) => {
-                this.handleClick(routeName, context.history, params, event);
-              }}
-            >
-              {children}
-            </a>
-          );
-        }}
+        {(context: RouteContext) => (
+          <a
+            {...props}
+            href={context.history.generatePath(routeName, context.params)}
+            onClick={(event: SyntheticEvent<HTMLLinkElement>) => {
+              this.handleClick(routeName, context.history, context.params, event);
+            }}
+          >
+            {children}
+          </a>
+        )}
       </RouteConsumer>
     );
   };
@@ -80,9 +76,7 @@ class Link extends React.Component<Props> {
       return this.renderInternalLink(to);
     }
 
-    throw new Error(
-      'Failed to create Link component: `to` property was not a URL, route path or route name'
-    );
+    return null;
   }
 }
 
