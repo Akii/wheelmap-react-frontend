@@ -1,0 +1,16 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "package.json",
+        "plugins/cordova-plugin-advanced-http/package.json",
+        "plugins/cordova-plugin-device/package.json",
+        "plugins/cordova-plugin-file/package.json",
+        "plugins/cordova-plugin-geolocation/package.json",
+        "plugins/cordova-plugin-statusbar/package.json",
+        "plugins/cordova-plugin-whitelist/package.json",
+        "plugins/cordova-plugin-wkwebview-engine/package.json"
+      ]
+    }
+  }
+}
