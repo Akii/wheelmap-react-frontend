@@ -1,5 +1,7 @@
 # Wheelmap React.js frontend
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/sozialhelden/wheelmap-react-frontend.svg)](https://greenkeeper.io/)
+
 This app is a refactored version of [Wheelmap](https://www.wheelmap.org)'s ‘classic’ Rails frontend.
 Its purpose is to split frontend and backend development and to make deployments as independent as
 possible of each other.
