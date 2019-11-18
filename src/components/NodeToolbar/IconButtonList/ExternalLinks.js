@@ -3,7 +3,6 @@
 import { t } from 'ttag';
 import * as React from 'react';
 import SourceLink from '../SourceLink';
-import { accessibilityCloudFeatureFrom } from '../../../lib/Feature';
 import type { Feature } from '../../../lib/Feature';
 import { AppContextConsumer } from '../../../AppContext';
 
@@ -21,7 +20,7 @@ const captions = {
 };
 
 export default function ExternalInfoAndEditPageLinks(props: Props) {
-  const acFeature = accessibilityCloudFeatureFrom(props.feature);
+  const acFeature = props.feature;
   if (!acFeature) return null;
   const properties = acFeature.properties;
   if (!properties) return null;

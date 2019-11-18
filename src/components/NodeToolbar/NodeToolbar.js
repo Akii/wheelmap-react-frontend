@@ -28,7 +28,7 @@ import type {
   YesNoUnknown,
   WheelmapFeature,
 } from '../../lib/Feature';
-import { isWheelmapFeatureId, placeNameFor, wheelmapFeatureFrom } from '../../lib/Feature';
+import { isWheelmapFeatureId, placeNameFor } from '../../lib/Feature';
 import { type Category, type CategoryLookupTables, getCategoryId } from '../../lib/Categories';
 import { hasBigViewport } from '../../lib/ViewportSize';
 import type { EquipmentInfo } from '../../lib/EquipmentInfo';
@@ -258,7 +258,7 @@ class NodeToolbar extends React.Component<Props, State> {
   }
 
   renderInlineWheelchairAccessibilityEditor() {
-    const wheelmapFeature = wheelmapFeatureFrom(this.props.feature);
+    const wheelmapFeature = this.props.feature;
     if (!wheelmapFeature || !wheelmapFeature.properties) {
       return null;
     }
