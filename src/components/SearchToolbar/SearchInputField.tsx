@@ -1,5 +1,3 @@
-// @flow
-
 import * as React from 'react';
 import styled from 'styled-components';
 import { interpolateLab } from 'd3-interpolate';
@@ -7,15 +5,15 @@ import colors from '../../lib/colors';
 import { t } from 'ttag';
 
 type Props = {
-  onSubmit: ?(event: SyntheticEvent<HTMLInputElement>) => void,
+  onSubmit: (event: React.FormEvent<HTMLInputElement>) => void | null,
   onChange: (value: string) => void,
-  onBlur: ?(event: SyntheticEvent<>) => void,
-  onFocus: ?(event: SyntheticEvent<>) => void,
-  onClick: ?(event: SyntheticEvent<>) => void,
-  ref: (input: HTMLInputElement) => void,
-  searchQuery: ?string,
+  onBlur: () => void | null,
+  onFocus: (event: React.FocusEvent<HTMLInputElement>) => void | null,
+  onClick: (event: React.MouseEvent<HTMLInputElement>) => void | null,
+  ref: (input: HTMLInputElement) => void | null,
+  searchQuery: string | null,
   className?: string,
-  disabled: ?boolean,
+  disabled?: boolean | null,
   hidden: boolean,
   ariaRole: string,
 };
@@ -24,8 +22,8 @@ type State = {
   value: string,
 };
 
-class SearchInputField extends React.Component<Props, State> {
-  input: ?HTMLInputElement;
+export class SearchInputField extends React.Component<Props, State> {
+  input = React.createRef<HTMLInputElement>();
 
   constructor(props) {
     super(props);
@@ -36,23 +34,25 @@ class SearchInputField extends React.Component<Props, State> {
   }
 
   focus() {
-    if (!this.input) return;
-    this.input.focus();
+    if (this.input.current) {
+      this.input.current.focus();
+    }
   }
 
   blur() {
-    if (!this.input) return;
-    this.input.blur();
+    if (this.input.current) {
+      this.input.current.blur();
+    }
   }
 
-  keyPressed = (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
+  keyPressed = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.which === 13 && this.props.onSubmit) {
       this.props.onSubmit(event);
       event.preventDefault();
     }
   };
 
-  onChange = event => {
+  onChange = (event: any) => {
     const value = event.target.value;
     this.setState({ value });
     this.props.onChange(value);
@@ -66,7 +66,7 @@ class SearchInputField extends React.Component<Props, State> {
 
     return (
       <input
-        ref={input => (this.input = input)}
+        ref={this.input}
         value={value}
         name="search"
         onChange={this.onChange}

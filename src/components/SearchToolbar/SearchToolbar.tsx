@@ -1,57 +1,54 @@
-// @flow
-
 import { t } from 'ttag';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Dots } from 'react-activity';
 import styled, { css } from 'styled-components';
 
-import Toolbar from '../Toolbar';
+import Toolbar, { Toolbar as ToolbarClass } from '../Toolbar';
 import Button from '../Button';
 import CloseLink from '../CloseLink';
 import SearchIcon from './SearchIcon';
 import ChevronRight from '../ChevronRight';
 import CategoryMenu from './CategoryMenu';
 import SearchResults from './SearchResults';
-import SearchResult from './SearchResults';
+import SearchResult from './SearchResult';
 import SearchInputField from './SearchInputField';
 import AccessibilityFilterMenu from './AccessibilityFilterMenu';
 
 import colors from '../../lib/colors';
 import { isAccessibilityFiltered } from '../../lib/Feature';
-//import searchPlaces from '../../lib/searchPlaces';
-import type { SearchResultCollection } from '../../lib/searchPlaces';
-import type { PlaceFilter } from './AccessibilityFilterModel';
+import { SearchResultCollection } from '../../lib/searchPlaces';
+import { PlaceFilter } from './AccessibilityFilterModel';
 import { isOnSmallViewport } from '../../lib/ViewportSize';
-import type { SearchResultFeature } from '../../lib/searchPlaces';
-import type { WheelmapFeature } from '../../lib/Feature';
-import { type CategoryLookupTables } from '../../lib/Categories';
+import { SearchResultFeature } from '../../lib/searchPlaces';
+import { WheelmapFeature } from '../../lib/Feature';
+import { CategoryLookupTables } from '../../lib/Categories';
 import ErrorBoundary from '../ErrorBoundary';
 
 export type Props = PlaceFilter & {
   categories: CategoryLookupTables,
   hidden: boolean,
   inert: boolean,
-  category: ?string,
+  category: string | null,
   showCategoryMenu?: boolean,
-  searchQuery: ?string,
-  onSearchResultClick: (feature: SearchResultFeature, wheelmapFeature: ?WheelmapFeature) => void,
+  searchQuery: string | null,
+  onSearchResultClick: (feature: SearchResultFeature, wheelmapFeature: WheelmapFeature | null) => void,
   onChangeSearchQuery: (newSearchQuery: string) => void,
   onSubmit: (searchQuery: string) => void,
   onAccessibilityFilterButtonClick: (filter: PlaceFilter) => void,
-  onClose: ?() => void,
+  onClose: () => void | null,
   onClick: () => void,
   isExpanded: boolean,
   hasGoButton: boolean,
-  searchResults: ?SearchResultCollection | ?Promise<SearchResultCollection>,
+  searchResults: SearchResultCollection | Promise<SearchResultCollection> | null,
 };
 
 type State = {
   searchFieldIsFocused: boolean,
   isCategoryFocused: boolean,
   isLoading: boolean,
-  searchResults: ?SearchResultCollection,
-  searchResultsPromise: ?Promise<SearchResultCollection>,
+  searchResults: SearchResultCollection | null,
+  searchResultsPromise: Promise<SearchResultCollection> | null,
 };
 
 const StyledChevronRight = styled(ChevronRight)`
@@ -95,7 +92,7 @@ const GoButton = styled(Button)`
   }
 `;
 
-const StyledToolbar = styled(Toolbar)`
+const StyledToolbar = styled(Toolbar).attrs({ isExpanded: false })`
   transition: opacity 0.3s ease-out, transform 0.15s ease-out, width: 0.15s ease-out, height: 0.15s ease-out;
   display: flex;
   flex-direction: column;
@@ -231,11 +228,11 @@ export default class SearchToolbar extends React.PureComponent<Props, State> {
     searchResultsPromise: null,
   };
 
-  toolbar: ?React.ElementRef<typeof Toolbar> = null;
-  searchInputField: ?React.ElementRef<'input'> = null;
-  closeLink: ?React.ElementRef<typeof CloseLink> = null;
-  goButton: ?React.ElementRef<'button'> = null;
-  firstResult: ?React.ElementRef<typeof SearchResult> = null;
+  toolbar = React.createRef<ToolbarClass>();
+  searchInputField = React.createRef<any>();
+  closeLink = React.createRef<any>();
+  goButton = React.createRef<any>();
+  firstResult: SearchResult | null = null;
 
   static getDerivedStateFromProps(props: Props, state: State) {
     const { searchResults } = props;
@@ -280,8 +277,8 @@ export default class SearchToolbar extends React.PureComponent<Props, State> {
   }
 
   handleSearchResultsFetched = (
-    prevSearchResultsPromise: Promise<SearchResults>,
-    searchResults: SearchResults
+    prevSearchResultsPromise: Promise<SearchResultCollection>,
+    searchResults: SearchResultCollection
   ) => {
     if (this.state.searchResultsPromise !== prevSearchResultsPromise) {
       return;
@@ -294,37 +291,40 @@ export default class SearchToolbar extends React.PureComponent<Props, State> {
   };
 
   ensureFullVisibility() {
-    if (this.toolbar && this.toolbar.ensureFullVisibility) {
-      this.toolbar.ensureFullVisibility();
+    if (this.toolbar.current && this.toolbar.current.ensureFullVisibility) {
+      this.toolbar.current.ensureFullVisibility();
     }
   }
 
   clearSearch() {
-    if (this.searchInputField) {
-      this.searchInputField.value = '';
-      this.searchInputField.blur();
+    if (this.searchInputField.current) {
+      this.searchInputField.current.value = '';
+      this.searchInputField.current.blur();
     }
   }
 
   focus() {
     if (
-      window.document.activeElement === ReactDOM.findDOMNode(this.goButton) ||
-      window.document.activeElement === ReactDOM.findDOMNode(this.searchInputField)
+      window.document.activeElement === this.goButton.current ||
+      window.document.activeElement === this.searchInputField.current
     ) {
       return;
     }
     if (isOnSmallViewport()) {
-      if (!this.goButton) return;
-      this.goButton.focus();
+      if (this.goButton.current) {
+        this.goButton.current.focus();
+      }
     } else {
-      if (!this.searchInputField) return;
-      this.searchInputField.focus();
+      if (this.searchInputField.current) {
+        this.searchInputField.current.focus();
+      }
     }
   }
 
   blur() {
-    if (!this.searchInputField) return;
-    this.searchInputField.blur();
+    if (this.searchInputField.current) {
+      this.searchInputField.current.blur();
+    }
   }
 
   resetSearch() {
@@ -338,7 +338,7 @@ export default class SearchToolbar extends React.PureComponent<Props, State> {
   renderSearchInputField() {
     return (
       <SearchInputField
-        ref={searchInputField => (this.searchInputField = searchInputField)}
+        ref={this.searchInputField}
         searchQuery={this.props.searchQuery}
         hidden={this.props.hidden}
         onClick={() => {
@@ -361,7 +361,7 @@ export default class SearchToolbar extends React.PureComponent<Props, State> {
           }, 300);
         }}
         onChange={this.props.onChangeSearchQuery}
-        onSubmit={(event: SyntheticEvent<HTMLInputElement>) => {
+        onSubmit={(event: React.FormEvent<HTMLInputElement>) => {
           this.setState({ searchFieldIsFocused: false }, () => {
             this.blur();
             if (this.firstResult) {
@@ -384,10 +384,7 @@ export default class SearchToolbar extends React.PureComponent<Props, State> {
           onSearchResultClick={this.props.onSearchResultClick}
           hidden={this.props.hidden}
           categories={this.props.categories}
-          onSelect={() => this.clearSearch()}
-          refFirst={ref => {
-            this.firstResult = ref;
-          }}
+          refFirst={(ref: SearchResult) => this.firstResult = ref}
         />
       </div>
     );
@@ -411,9 +408,6 @@ export default class SearchToolbar extends React.PureComponent<Props, State> {
     return (
       <CategoryMenu
         onFocus={() => this.setState({ isCategoryFocused: true })}
-        onBlur={() => {
-          setTimeout(() => this.setState({ isCategoryFocused: false }));
-        }}
         category={this.props.category}
         accessibilityFilter={this.props.accessibilityFilter}
       />
@@ -469,7 +463,7 @@ export default class SearchToolbar extends React.PureComponent<Props, State> {
     // translator: button shown next to the search bar
     const caption = t`Go`;
     return (
-      <GoButton ref={button => (this.goButton = button)} onClick={this.props.onClose}>
+      <GoButton ref={this.goButton} onClick={this.props.onClose}>
         {caption} <StyledChevronRight />
       </GoButton>
     );
@@ -494,7 +488,7 @@ export default class SearchToolbar extends React.PureComponent<Props, State> {
         hidden={hidden}
         inert={inert}
         minimalHeight={75}
-        ref={toolbar => (this.toolbar = toolbar)}
+        ref={this.toolbar}
         isSwipeable={false}
         enableTransitions={false}
         role="search"

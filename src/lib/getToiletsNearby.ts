@@ -1,9 +1,8 @@
-// @flow
 import flatten from 'lodash/flatten';
 import sortBy from 'lodash/sortBy';
 import env from './env';
 import config from './config';
-import type { Feature } from './Feature';
+import { Feature } from './Feature';
 
 import { globalFetchManager } from './FetchManager';
 import {
@@ -51,7 +50,7 @@ function fetchAcToiletPlaces(
   radius: number,
   includeSourceIds: Array<string>,
   excludeSourceIds: Array<string>,
-  appToken: string
+  appToken?: string
 ): Promise<Feature[]> {
   const sourceIdParams = buildSourceIdParams(includeSourceIds, excludeSourceIds);
   const baseUrl = env.REACT_APP_ACCESSIBILITY_CLOUD_BASE_URL || '';
@@ -133,5 +132,6 @@ export function fetchToiletsNearFeature(
 }
 
 if (typeof window !== 'undefined') {
+  // @ts-ignore
   window.fetchToiletsNearby = fetchToiletsNearby;
 }

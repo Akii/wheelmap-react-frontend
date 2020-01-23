@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-export default function SearchIcon(props) {
+export default function SearchIcon(props: any) {
   return (
     <svg
       width="15px"

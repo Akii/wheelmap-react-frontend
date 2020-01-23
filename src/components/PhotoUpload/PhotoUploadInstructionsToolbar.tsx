@@ -330,7 +330,6 @@ export default class PhotoUploadInstructionsToolbar extends React.Component<Prop
             </button>
             <label
               className="link-button primary-button file-label"
-              disabled={!canSubmit}
               htmlFor="photo-file-upload"
             >
               {t`Continue`}

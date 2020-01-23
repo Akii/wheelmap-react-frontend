@@ -1,7 +1,7 @@
 import get from 'lodash/get';
 import sortBy from 'lodash/sortBy';
 import * as React from 'react';
-import type { EquipmentInfo } from '../../../lib/EquipmentInfo';
+import { EquipmentInfo } from '../../../lib/EquipmentInfo';
 import EquipmentItem from './EquipmentItem';
 import styled from 'styled-components';
 import colors from '../../../lib/colors';
@@ -13,7 +13,7 @@ type Props = {
   isExpanded?: boolean,
   placeInfoId: string,
   className?: string,
-  children?: React.Node,
+  children?: React.ReactNode,
 };
 
 function EquipmentList(props: Props) {

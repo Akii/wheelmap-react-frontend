@@ -1,20 +1,18 @@
-// @flow
-
 import * as React from 'react';
 import SearchIcon from './SearchIcon';
 import MapButton from '../MapButton';
 import { t } from 'ttag';
 import styled from 'styled-components';
-import type { YesNoLimitedUnknown, YesNoUnknown } from '../../lib/Feature';
+import { YesNoLimitedUnknown, YesNoUnknown } from '../../lib/Feature';
 import { isAccessibilityFiltered } from '../../lib/Feature';
 import Categories from '../../lib/Categories';
 import CombinedIcon from './CombinedIcon';
 import BreadcrumbChevron from '../icons/ui-elements/BreadcrumbChevron';
 
 type Props = {
-  onClick: (event: SyntheticMouseEvent<HTMLButtonElement>) => void,
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void,
   className?: string,
-  category: ?string,
+  category: string | null,
   accessibilityFilter: YesNoLimitedUnknown[],
   toiletFilter: YesNoUnknown[],
 };

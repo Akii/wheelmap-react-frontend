@@ -9,6 +9,7 @@ export default function goToLocationSettings() {
 
   const userAgent = getUserAgent();
 
+  // @ts-ignore
   let identity = userAgent.browser.name;
   if (userAgent.os.name === 'iOS') {
     identity = 'iOS';

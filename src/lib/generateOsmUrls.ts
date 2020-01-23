@@ -1,4 +1,4 @@
-import { Feature } from './Feature';
+import { Feature, isWheelmapFeature, isWheelmapFeatureId } from './Feature';
 
 function getLatLonFromFeature(feature: Feature) {
   if (
@@ -13,7 +13,7 @@ function getLatLonFromFeature(feature: Feature) {
     };
   }
   // todo: check this function
-  if (feature.type === 'WheelmapFeature') {
+  if (isWheelmapFeature(feature)) {
     return { lat: feature.properties.lat, lon: feature.properties.lon };
   }
   return { lat: undefined, lon: undefined }
@@ -60,7 +60,7 @@ export function generateShowOnOsmUrl(feature: Feature) {
     return null;
   }
 
-  if (feature.type === 'WheelmapFeature' && feature.id) {
+  if (isWheelmapFeature(feature)) {
     const featureId = Number(feature.id);
     if (featureId < 0) {
       return `https://www.openstreetmap.org/way/${Math.abs(featureId)}`;

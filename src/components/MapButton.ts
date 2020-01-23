@@ -1,21 +1,7 @@
-import * as React from 'react';
 import styled from 'styled-components';
 import colors from '../lib/colors';
 
-type Props = {
-  top: number,
-  right: number,
-  left: number,
-  className: string
-}
-
-class Button extends React.Component<Props> {
-  render() {
-    return <div className={this.props.className}></div>
-  }
-}
-
-const MapButton = styled(Button)`
+const MapButton = styled('button')`
   width: 40px;
   min-height: 40px;
   padding: 0;
@@ -25,9 +11,6 @@ const MapButton = styled(Button)`
   border: none;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   position: fixed;
-  top: ${props => props.top}px;
-  right: ${props => props.right}px;
-  left: ${props => props.left}px;
   z-index: 500;
   cursor: pointer;
   &:hover,

@@ -1,16 +1,14 @@
-// @flow
-
 import { t } from 'ttag';
 import * as React from 'react';
 
 import getAddressString from '../../lib/getAddressString';
 import Categories, {
   getCategoryId,
-  type Category,
-  type CategoryLookupTables,
+  Category,
+  CategoryLookupTables,
 } from '../../lib/Categories';
-import { isWheelchairAccessible, type WheelmapFeature } from '../../lib/Feature';
-import type { SearchResultFeature } from '../../lib/searchPlaces';
+import { isWheelchairAccessible, WheelmapFeature } from '../../lib/Feature';
+import { SearchResultFeature } from '../../lib/searchPlaces';
 
 import Icon from '../Icon';
 import Address from '../NodeToolbar/Address';
@@ -19,16 +17,16 @@ import PlaceName from '../PlaceName';
 type Props = {
   feature: SearchResultFeature,
   categories: CategoryLookupTables,
-  onClick: (feature: SearchResultFeature, wheelmapFeature: ?WheelmapFeature) => void,
+  onClick: (feature: SearchResultFeature, wheelmapFeature: WheelmapFeature | null) => void,
   hidden: boolean,
-  wheelmapFeature: ?WheelmapFeature | Promise<?WheelmapFeature>,
+  wheelmapFeature: WheelmapFeature | Promise<WheelmapFeature | null> | null,
 };
 
 type State = {
-  category: ?Category,
-  parentCategory: ?Category,
-  wheelmapFeature: ?WheelmapFeature,
-  wheelmapFeaturePromise: ?Promise<?WheelmapFeature>,
+  category: Category | null,
+  parentCategory: Category | null,
+  wheelmapFeature: WheelmapFeature | null,
+  wheelmapFeaturePromise: Promise<WheelmapFeature | null> | null,
 };
 
 export default class SearchResult extends React.Component<Props, State> {
@@ -41,9 +39,9 @@ export default class SearchResult extends React.Component<Props, State> {
     wheelmapFeaturePromise: null,
   };
 
-  root: ?React.ElementRef<'li'> = null;
+  root = React.createRef<HTMLLIElement>();
 
-  static getDerivedStateFromProps(props: Props, state: State): $Shape<State> {
+  static getDerivedStateFromProps(props: Props, state: State): Partial<State> {
     const { categories, feature, wheelmapFeature } = props;
 
     // Do not update anything when the wheelmap feature promise is already in use.
@@ -89,8 +87,8 @@ export default class SearchResult extends React.Component<Props, State> {
   }
 
   handleWheelmapFeatureFetched = (
-    prevWheelmapFeaturePromise: Promise<?WheelmapFeature>,
-    wheelmapFeature: ?WheelmapFeature
+    prevWheelmapFeaturePromise: Promise<WheelmapFeature | null>,
+    wheelmapFeature: WheelmapFeature | null
   ) => {
     if (this.state.wheelmapFeaturePromise !== prevWheelmapFeaturePromise) {
       return;
@@ -109,8 +107,8 @@ export default class SearchResult extends React.Component<Props, State> {
   };
 
   focus() {
-    if (this.root) {
-      this.root.focus();
+    if (this.root.current) {
+      this.root.current.focus();
     }
   }
 
@@ -139,9 +137,7 @@ export default class SearchResult extends React.Component<Props, State> {
 
     return (
       <li
-        ref={r => {
-          this.root = r;
-        }}
+        ref={this.root}
         className={`osm-category-${feature.properties.osm_key || 'unknown'}-${feature.properties
           .osm_value || 'unknown'}`}
       >

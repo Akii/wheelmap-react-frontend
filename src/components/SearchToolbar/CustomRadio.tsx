@@ -1,12 +1,10 @@
-// @flow
-
 import * as React from 'react';
-import { findDOMNode } from 'react-dom';
 import { Radio } from 'react-radio-group';
 
 import RadioButtonUnselected from '../icons/ui-elements/RadioButtonUnselected';
 import RadioButtonSelected from '../icons/ui-elements/RadioButtonSelected';
-import type { FilterName } from './AccessibilityFilterModel';
+
+type FilterName = any;
 
 type CustomRadioProps = {
   currentFilterName: FilterName,
@@ -17,17 +15,21 @@ type CustomRadioState = {
   isFocused: boolean,
 };
 
+interface Focusable {
+  focus(): void;
+};
+
 export default class CustomRadio extends React.Component<CustomRadioProps, CustomRadioState> {
   state = {
     isFocused: false,
   };
 
-  radioButton: Radio;
+  radioButton = React.createRef<React.Component<any> & Focusable>();
 
   componentDidMount() {
     const { currentFilterName, value } = this.props;
-    if (currentFilterName === value) {
-      this.radioButton.focus();
+    if (currentFilterName === value && this.radioButton.current) {
+      this.radioButton.current.focus();
     }
   }
 
@@ -40,7 +42,9 @@ export default class CustomRadio extends React.Component<CustomRadioProps, Custo
   };
 
   focus() {
-    this.radioButton.focus();
+    if (this.radioButton.current) {
+      this.radioButton.current.focus();
+    }
   }
 
   render() {
@@ -54,8 +58,7 @@ export default class CustomRadio extends React.Component<CustomRadioProps, Custo
           value={value}
           onFocus={this.onFocus}
           onBlur={this.onBlur}
-          ref={radioButtonInstance => (this.radioButton = findDOMNode(radioButtonInstance))}
-          role="radio"
+          ref={this.radioButton}
           aria-checked={isRadioButtonSelected}
         />
         <RadioButton

@@ -203,7 +203,7 @@ class ShareBar extends React.Component<Props, State> {
   }
 }
 
-const StyledIconButton = styled(IconButton)`
+const StyledIconButton = styled(IconButton).attrs({ hoverColor: null, activeColor: null })`
   ${Caption} {
     font-size: 80%;
     margin-top: 0.3em;

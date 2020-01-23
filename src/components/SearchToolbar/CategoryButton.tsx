@@ -1,5 +1,3 @@
-// @flow
-
 import { t } from 'ttag';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
@@ -8,7 +6,7 @@ import CombinedIcon from './CombinedIcon';
 import colors from '../../lib/colors';
 import IconButton, { Circle, Caption } from '../IconButton';
 import CloseIcon from '../icons/actions/Close';
-import type { YesNoLimitedUnknown, YesNoUnknown } from '../../lib/Feature';
+import { YesNoLimitedUnknown, YesNoUnknown } from '../../lib/Feature';
 import { isAccessibilityFiltered } from '../../lib/Feature';
 import Link, { RouteConsumer } from '../Link/Link';
 
@@ -19,8 +17,8 @@ type Props = {
   hasCircle?: boolean,
   accessibilityFilter?: YesNoLimitedUnknown[],
   toiletFilter?: YesNoUnknown[],
-  onClick: (category: string) => void,
-  onFocus?: (event: UIEvent) => void,
+  onClick?: (category: string) => void,
+  onFocus?: () => void,
   className?: string,
   isMainCategory: boolean,
 };
@@ -46,8 +44,7 @@ function CategoryButton(props: Props) {
       toiletFilter={toiletFilter}
       category={category || 'undefined'}
       isMainCategory={isMainCategory}
-      size="medium"
-      ariaHidden={true}
+      aria-hidden={true}
     />
   );
 

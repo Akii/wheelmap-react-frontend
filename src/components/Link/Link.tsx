@@ -12,6 +12,7 @@ type Props = {
   className?: string | null,
   role?: string | null,
   onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void,
+  onFocus?: () => void,
 };
 
 class Link extends React.Component<Props> {

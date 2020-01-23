@@ -1,18 +1,16 @@
-// @flow
-
 import * as React from 'react';
 import isEqual from 'lodash/isEqual';
 import styled from 'styled-components';
 
 import Icon from '../Icon';
-import type { YesNoLimitedUnknown, YesNoUnknown } from '../../lib/Feature';
+import { YesNoLimitedUnknown, YesNoUnknown } from '../../lib/Feature';
 import ToiletStatusAccessible from '../icons/accessibility/ToiletStatusAccessible';
 import { isAccessibilityFiltered } from '../../lib/Feature';
 
 type Props = {
   accessibilityFilter?: YesNoLimitedUnknown[],
   toiletFilter?: YesNoUnknown[],
-  category?: ?string,
+  category?: string | null,
   isMainCategory?: boolean,
   className?: string,
 };

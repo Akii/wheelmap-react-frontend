@@ -5,12 +5,12 @@ type ConjunctionType = 'and' | 'or';
 
 type ConjunctionMap = {
   and?: {
-    withSerialComma: React.Node,
-    withoutSerialComma: React.Node,
+    withSerialComma: React.ReactNode,
+    withoutSerialComma: React.ReactNode,
   },
   or?: {
-    withSerialComma: React.Node,
-    withoutSerialComma: React.Node,
+    withSerialComma: React.ReactNode,
+    withoutSerialComma: React.ReactNode,
   },
 };
 
@@ -55,9 +55,9 @@ const conjunctionMap: ConjunctionMap = {
   //     => <div><strong>humans</strong> and <em>animals</em></div>
 };
 export default function getHumanEnumeration(
-  elements: React.ChildrenArray<*>,
+  elements: React.ReactNode[],
   conjunctionType: ConjunctionType = 'and'
-): React.ChildrenArray<*> {
+): React.ReactNode[] {
   if (!elements) return [];
 
   const count = elements.length;

@@ -1,27 +1,25 @@
-// @flow
-
 import { t } from 'ttag';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import type { SearchResultCollection } from '../../lib/searchPlaces';
+import { SearchResultCollection } from '../../lib/searchPlaces';
 import colors from '../../lib/colors';
-import type { SearchResultFeature } from '../../lib/searchPlaces';
-import type { WheelmapFeature } from '../../lib/Feature';
+import { SearchResultFeature } from '../../lib/searchPlaces';
+import { WheelmapFeature } from '../../lib/Feature';
 import SearchResult from './SearchResult';
-import { type CategoryLookupTables } from '../../lib/Categories';
+import { CategoryLookupTables } from '../../lib/Categories';
 
 type Props = {
   searchResults: SearchResultCollection,
   categories: CategoryLookupTables,
   className?: string,
-  hidden: ?boolean,
-  onSearchResultClick: (feature: SearchResultFeature, wheelmapFeature: ?WheelmapFeature) => void,
-  refFirst: ?(result: ?SearchResult) => void,
+  hidden: boolean | null,
+  onSearchResultClick: (feature: SearchResultFeature, wheelmapFeature: WheelmapFeature | null) => void,
+  refFirst: (result: SearchResult | null) => void | null,
 };
 
 function SearchResults(props: Props) {
-  const id = result => result && result.properties && result.properties.osm_id;
+  const id = (result: any) => result && result.properties && result.properties.osm_id;
   const { wheelmapFeatures, features } = props.searchResults;
 
   const failedLoading = !!props.searchResults.error;

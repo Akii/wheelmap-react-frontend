@@ -7,7 +7,7 @@ import isEqual from 'lodash/isEqual';
 import isArray from 'lodash/isArray';
 import uniq from 'lodash/uniq';
 import isPlainObject from 'lodash/isPlainObject';
-import { GeometryObject } from 'geojson';
+import { Point } from 'geojson';
 import { translatedStringFromObject } from './i18n';
 
 import useImperialUnits from './useImperialUnits';
@@ -122,7 +122,7 @@ export interface WheelmapProperties {
 
 export type WheelmapFeature = {
   type: 'Feature',
-  geometry: GeometryObject | null,
+  geometry: Point | null,
   properties: WheelmapProperties | null,
   id: number,
 };
@@ -161,7 +161,7 @@ export interface AccessibilityCloudProperties {
 export type AccessibilityCloudFeature = {
   type: 'Feature',
   name: string | null,
-  geometry: GeometryObject | null,
+  geometry: Point | null,
   properties: AccessibilityCloudProperties,
 };
 
@@ -585,7 +585,6 @@ export function removeNullAndUndefinedFields(something: any): any {
 export function normalizedCoordinatesForFeature(feature: Feature): [number, number] | null {
   const geometry = feature ? feature.geometry : null;
   if (!(geometry instanceof Object)) return null;
-  // @ts-ignore
   const coordinates = geometry ? geometry.coordinates : null;
   if (!(coordinates instanceof Array) || coordinates.length !== 2) return null;
   // @ts-ignore

@@ -10,7 +10,7 @@ import CloseLink from '../CloseLink';
 import CustomRadio from '../NodeToolbar/AccessibilityEditor/CustomRadio';
 import StyledRadioGroup from '../NodeToolbar/AccessibilityEditor/StyledRadioGroup';
 
-import { PhotoModel } from '../NodeToolbar/Photos/PhotoModel';
+import { PhotoModel } from '../../lib/PhotoModel';
 import CloseButton from '../CloseButton';
 
 export type ReportOptions = 'wrong-place' | 'outdated' | 'offensive' | 'other';

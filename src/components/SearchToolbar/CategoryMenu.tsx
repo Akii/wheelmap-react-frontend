@@ -8,11 +8,11 @@ import { Circle } from '../IconButton';
 import CategoryButton from './CategoryButton';
 import { isAccessibilityFiltered } from '../../lib/Feature';
 import Categories from '../../lib/Categories';
-import type { YesNoLimitedUnknown, YesNoUnknown } from '../../lib/Feature';
+import { YesNoLimitedUnknown, YesNoUnknown } from '../../lib/Feature';
 
 type Props = {
   onFocus: () => void,
-  category: ?string,
+  category: string | null,
   accessibilityFilter?: YesNoLimitedUnknown[],
   toiletFilter?: YesNoUnknown[],
   className?: string,

@@ -1,5 +1,3 @@
-// @flow
-
 import { t } from 'ttag';
 import * as React from 'react';
 import isEqual from 'lodash/isEqual';
@@ -7,18 +5,18 @@ import styled from 'styled-components';
 
 import colors from '../../lib/colors';
 import AccessibilityFilterButton from './AccessibilityFilterButton';
-import type { PlaceFilter } from './AccessibilityFilterModel';
-import type { YesNoLimitedUnknown } from '../../lib/Feature';
+import { PlaceFilter } from './AccessibilityFilterModel';
+import { YesNoLimitedUnknown } from '../../lib/Feature';
 import { yesNoUnknownArray } from '../../lib/Feature';
 
 type Props = PlaceFilter & {
   className?: string,
-  hidden: boolean,
-  onCloseClicked: () => void,
+  hidden?: boolean,
+  onCloseClicked?: () => void,
   onBlur: () => void,
   onButtonClick: (data: PlaceFilter) => void,
   category: string,
-  accessibilities: YesNoLimitedUnknown[],
+  accessibilities?: YesNoLimitedUnknown[],
 };
 
 function getAvailableFilters() {
