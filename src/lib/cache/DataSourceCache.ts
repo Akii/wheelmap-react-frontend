@@ -8,6 +8,7 @@ export type DataSource = {
   shortName: string | undefined,
   name: string | undefined,
   originWebsiteURL: string | undefined,
+  additionalAccessibilityInformation: any
 };
 
 export default class DataSourceCache extends URLDataCache<DataSource> {

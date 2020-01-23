@@ -43,4 +43,4 @@ const routes = [
   },
 ];
 
-module.exports = new Router(routes);
+export default new Router(routes);

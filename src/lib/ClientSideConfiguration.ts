@@ -1,4 +1,5 @@
 import { LocalizedString, translatedStringFromObject } from './i18n';
+import { LinkData } from '../App';
 
 export interface TwitterConfiguration {
   siteHandle?: string,
@@ -15,6 +16,7 @@ export interface FacebookConfiguration {
 export interface GoogleAnalyticsConfiguration {
   trackingId?: string,
   siteVerificationToken?: string,
+  siteVerification?: any
 };
 
 export interface LinkDescription {
@@ -52,7 +54,7 @@ export interface ClientSideConfiguration {
     facebook?: FacebookConfiguration,
     googleAnalytics?: GoogleAnalyticsConfiguration,
   },
-  customMainMenuLinks?: LinkDescription[],
+  customMainMenuLinks?: LinkData[],
   addPlaceURL: string,
 };
 

@@ -93,11 +93,11 @@ export function resetUUID() {
   notifyListeners();
 }
 
-export function getJoinedMappingEventId(): ?string {
+export function getJoinedMappingEventId(): string | null {
   return storage.getItem('wheelmap.joinedMappingEventId');
 }
 
-export function setJoinedMappingEventId(mappingEventId: ?string) {
+export function setJoinedMappingEventId(mappingEventId: string | null) {
   if (mappingEventId) {
     storage.setItem('wheelmap.joinedMappingEventId', mappingEventId);
   } else {
@@ -106,19 +106,19 @@ export function setJoinedMappingEventId(mappingEventId: ?string) {
 }
 
 type EventJoinData = {
-  emailAddress: ?string,
-  invitationToken: ?string,
+  emailAddress: string | null,
+  invitationToken: string | null,
 };
 
 export function getJoinedMappingEventData(): EventJoinData {
   try {
     return JSON.parse(storage.getItem('wheelmap.joinedMappingEventData')) || {};
   } catch {
-    return {};
+    return { emailAddress: null, invitationToken: null };
   }
 }
 
-export function setJoinedMappingEventData(emailAddress: ?string, invitationToken: ?string) {
+export function setJoinedMappingEventData(emailAddress: string = null, invitationToken: string = null) {
   const current = getJoinedMappingEventData();
   current.invitationToken = invitationToken;
   current.emailAddress = emailAddress || current.emailAddress;

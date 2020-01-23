@@ -12,6 +12,7 @@ import {
   WheelmapProperties,
   AccessibilityCloudProperties,
   NodeProperties,
+  isWheelmapProperties,
 } from './Feature';
 import { SearchResultFeature } from './searchPlaces';
 import { hasAccessibleToilet } from './Feature';
@@ -189,32 +190,32 @@ export default class Categories {
 
   static getCategoriesForFeature(
     categoryLookupTables: CategoryLookupTables,
-    feature: Feature | EquipmentInfo | SearchResultFeature | undefined
-  ): { category: Category | undefined, parentCategory?: Category } {
+    feature: Feature | EquipmentInfo | SearchResultFeature | null
+  ): { category: Category | null, parentCategory: Category | null } {
     if (!feature) {
-      return { category: null };
+      return { category: null, parentCategory: null };
     }
 
     const properties = feature.properties;
     if (!properties) {
-      return { category: null };
+      return { category: null, parentCategory: null };
     }
 
     let categoryId = null;
 
-    if (properties.node_type && typeof properties.node_type.identifier === 'string') {
+    if (properties['node_type'] && typeof properties['node_type'].identifier === 'string') {
       // wheelmap classic node
-      categoryId = properties.node_type.identifier;
-    } else if (properties.category) {
+      categoryId = properties['node_type'].identifier;
+    } else if (properties['category']) {
       // ac node
-      categoryId = properties.category;
-    } else if (properties.osm_key) {
+      categoryId = properties['category'];
+    } else if (properties['osm_key']) {
       // search result node from komoot
-      categoryId = properties.osm_value || properties.osm_key;
+      categoryId = properties['osm_value'] || properties['osm_key'];
     }
 
     if (!categoryId) {
-      return { category: null };
+      return { category: null, parentCategory: null };
     }
 
     const category = Categories.getCategory(categoryLookupTables, String(categoryId));
@@ -337,12 +338,12 @@ export function getCategoryId(category?: Category | string | WheelmapCategoryOrN
 
   if (typeof category === 'object' && category) {
     // wheelmap node_type or category
-    if (typeof category.identifier === 'string') {
-      return category.identifier;
+    if (typeof category['identifier'] === 'string') {
+      return category['identifier'];
     }
     // ac server category object
-    if (typeof category._id === 'string') {
-      return category._id;
+    if (typeof category['_id'] === 'string') {
+      return category['_id'];
     }
   }
 }
@@ -354,7 +355,7 @@ export function getCategoryIdFromProperties(
     return;
   }
 
-  if (props.node_type && typeof props.node_type.identifier === 'string') {
+  if (isWheelmapProperties(props) && props.node_type && typeof props.node_type.identifier === 'string') {
     return getCategoryId(props.node_type.identifier);
   }
 

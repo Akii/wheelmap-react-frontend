@@ -1,44 +1,40 @@
-// @flow
-
 import * as React from 'react';
 import includes from 'lodash/includes';
 import findIndex from 'lodash/findIndex';
 import get from 'lodash/get';
-import type { Router } from 'next/router';
+import { Router } from 'next/router';
 import queryString from 'query-string';
 
 import config from './lib/config';
 import savedState, {
   saveState,
   isFirstStart,
-  getJoinedMappingEventData,
   setJoinedMappingEventData,
   getJoinedMappingEventId as readStoredJoinedMappingEventId,
   setJoinedMappingEventId as storeJoinedMappingEventId,
 } from './lib/savedState';
 import { hasBigViewport, isOnSmallViewport } from './lib/ViewportSize';
-import { isTouchDevice, type UAResult } from './lib/userAgent';
-import { type RouterHistory } from './lib/RouterHistory';
-import { type SearchResultCollection } from './lib/searchPlaces';
-import type { Feature, WheelmapFeature } from './lib/Feature';
-import type { SearchResultFeature } from './lib/searchPlaces';
-import type { EquipmentInfo, EquipmentInfoProperties } from './lib/EquipmentInfo';
+import { isTouchDevice, UAResult } from './lib/userAgent';
+import { RouterHistory } from './lib/RouterHistory';
+import { SearchResultCollection } from './lib/searchPlaces';
+import { Feature, WheelmapFeature } from './lib/Feature';
+import { SearchResultFeature } from './lib/searchPlaces';
+import { EquipmentInfo, EquipmentInfoProperties } from './lib/EquipmentInfo';
 import {
-  type MappingEvents,
-  type MappingEvent,
+  MappingEvents,
+  MappingEvent,
   isMappingEventVisible,
-  isMappingEventOngoingById,
   canMappingEventBeJoined,
 } from './lib/MappingEvent';
-import { type Cluster } from './components/Map/Cluster';
-import { type App as AppModel } from './lib/App';
+import { Cluster } from './components/Map/Cluster';
+import { App as AppModel } from './lib/App';
 
 import MainView, { UnstyledMainView } from './MainView';
 
 import {
-  type NodeProperties,
-  type YesNoLimitedUnknown,
-  type YesNoUnknown,
+  NodeProperties,
+  YesNoLimitedUnknown,
+  YesNoUnknown,
   isAccessibilityFiltered,
   isToiletFiltered,
   getFeatureId,
@@ -49,12 +45,12 @@ import {
   InvalidCaptchaReason,
 } from './lib/cache/AccessibilityCloudImageCache';
 
-import type { ModalNodeState } from './lib/ModalNodeState';
-import { type CategoryLookupTables } from './lib/Categories';
-import { type PhotoModel } from './lib/PhotoModel';
-import { type PlaceDetailsProps } from './app/PlaceDetailsProps';
-import { type PlaceFilter } from './components/SearchToolbar/AccessibilityFilterModel';
-import { type LocalizedString } from './lib/i18n';
+import { ModalNodeState } from './lib/ModalNodeState';
+import { CategoryLookupTables } from './lib/Categories';
+import { PhotoModel } from './lib/PhotoModel';
+import { PlaceDetailsProps, PotentialPromise } from './app/PlaceDetailsProps';
+import { PlaceFilter } from './components/SearchToolbar/AccessibilityFilterModel';
+import { LocalizedString } from './lib/i18n';
 import { RouteProvider } from './components/Link/RouteContext';
 
 import 'react-activity/dist/react-activity.css';
@@ -72,21 +68,21 @@ export type LinkData = {
   tags?: string[],
 };
 
-type Props = {
+interface Props extends PlaceDetailsProps {
   className?: string,
   router: Router,
   routerHistory: RouterHistory,
   routeName: string,
   categories?: CategoryLookupTables,
   userAgent?: UAResult,
-  searchQuery?: ?string,
+  searchQuery?: string | null,
   searchResults?: SearchResultCollection | Promise<SearchResultCollection>,
   category?: string,
   app: AppModel,
-  lat: ?string,
-  lon: ?string,
-  zoom: ?string,
-  extent: ?[number, number, number, number],
+  lat: string | null,
+  lon: string | null,
+  zoom: string | null,
+  extent: [number, number, number, number] | null,
   inEmbedMode: boolean,
   mappingEvents: MappingEvents,
   mappingEvent?: MappingEvent,
@@ -99,17 +95,18 @@ type Props = {
   toiletFilter: YesNoUnknown[],
   accessibilityFilter: YesNoLimitedUnknown[],
 
-  toiletsNearby: ?PotentialPromise<Feature[]>,
-} & PlaceDetailsProps;
+  toiletsNearby: PotentialPromise<Feature[]>,
+};
 
-type State = {
+interface State {
   mappingEvents: MappingEvents,
   isOnboardingVisible: boolean,
-  joinedMappingEventId: ?string,
+  joinedMappingEventId: string | null,
+  joinedMappingEvent: MappingEvent | null,
   isMappingEventWelcomeDialogVisible: boolean,
   isMainMenuOpen: boolean,
   modalNodeState: ModalNodeState,
-  accessibilityPresetStatus?: ?YesNoLimitedUnknown,
+  accessibilityPresetStatus?: YesNoLimitedUnknown | null,
   isSearchBarVisible: boolean,
   isOnSmallViewport: boolean,
   isSearchToolbarExpanded: boolean,
@@ -123,17 +120,17 @@ type State = {
   waitingForPhotoUpload?: boolean,
   photoCaptchaFailed?: boolean,
   photoFlowNotification?: string,
-  photoFlowErrorMessage: ?string,
+  photoFlowErrorMessage: string | null,
   photoMarkedForReport: PhotoModel | null,
 
   activeCluster?: Cluster | null,
 
   // map controls
-  lat?: ?number,
-  lon?: ?number,
+  lat?: number | null,
+  lon?: number | null,
   isSpecificLatLonProvided: boolean,
-  zoom?: ?number,
-  extent?: ?[number, number, number, number],
+  zoom?: number | null,
+  extent?: [number, number, number, number] | null,
 };
 
 function isStickySearchBarSupported() {
@@ -168,6 +165,7 @@ class App extends React.Component<Props, State> {
     isSearchBarVisible: isStickySearchBarSupported(),
     isOnboardingVisible: false,
     joinedMappingEventId: null,
+    joinedMappingEvent: null,
     isMappingEventWelcomeDialogVisible: false,
     isMainMenuOpen: false,
     modalNodeState: null,
@@ -185,12 +183,12 @@ class App extends React.Component<Props, State> {
     photoFlowErrorMessage: null,
   };
 
-  map: ?any;
+  map: any;
 
-  mainView: ?UnstyledMainView;
+  mainView: UnstyledMainView;
 
-  static getDerivedStateFromProps(props: Props, state: State): $Shape<State> {
-    const newState: $Shape<State> = {
+  static getDerivedStateFromProps(props: Props, state: State): Partial<State> {
+    const newState: Partial<State> = {
       isSearchToolbarExpanded: false,
       isSearchBarVisible: isStickySearchBarSupported(),
     };
@@ -248,11 +246,11 @@ class App extends React.Component<Props, State> {
     const parsedLon = typeof props.lon === 'string' ? parseFloat(props.lon) : null;
 
     newState.extent = state.extent || props.extent || null;
-    newState.zoom = state.zoom || parsedZoom || savedState.map.lastZoom || null;
+    newState.zoom = state.zoom || parsedZoom || Number.parseInt(savedState.map.lastZoom, 10) || null;
     newState.lat =
-      state.lat || parsedLat || (savedState.map.lastCenter && savedState.map.lastCenter[0]) || null;
+      state.lat || parsedLat || (savedState.map.lastCenter && Number.parseFloat(savedState.map.lastCenter[0])) || null;
     newState.lon =
-      state.lon || parsedLon || (savedState.map.lastCenter && savedState.map.lastCenter[1]) || null;
+      state.lon || parsedLon || (savedState.map.lastCenter && Number.parseFloat(savedState.map.lastCenter[1])) || null;
 
     newState.isSpecificLatLonProvided = Boolean(parsedLat) && Boolean(parsedLon);
 
@@ -332,14 +330,15 @@ class App extends React.Component<Props, State> {
 
   trackMappingEventMembershipChanged = (
     reason: 'url' | 'button',
-    joinedMappingEventId: ?string,
+    joinedMappingEventId?: string,
     emailAddress?: string
   ) => {
     storeJoinedMappingEventId(joinedMappingEventId);
     const search: string = window.location.search;
 
     if (joinedMappingEventId) {
-      const invitationToken = this.props.router.query.token;
+      const token = this.props.router.query.token
+      const invitationToken = Array.isArray(token) ? token[0] : token;
       setJoinedMappingEventData(emailAddress, invitationToken);
 
       trackingEventBackend.track(this.props.app, {
@@ -387,7 +386,7 @@ class App extends React.Component<Props, State> {
       return;
     }
 
-    const params = this.getCurrentParams();
+    const params = this.getCurrentParams() as any;
 
     delete params.id;
     delete params.eid;
@@ -421,13 +420,13 @@ class App extends React.Component<Props, State> {
     saveState({ onboardingCompleted: 'false' });
     this.setState({ isOnboardingVisible: true });
 
-    const params = this.getCurrentParams();
+    const params = this.getCurrentParams() as any;
     delete params.id;
     delete params.eid;
     this.props.routerHistory.push('map', params);
   };
 
-  onMoveEnd = (state: $Shape<State>) => {
+  onMoveEnd = (state: Partial<State>) => {
     let { zoom, lat, lon } = state;
 
     // Adjust zoom level to be stored in the local storage to make sure the user can
@@ -455,14 +454,14 @@ class App extends React.Component<Props, State> {
 
   showSelectedFeature = (
     featureId: string | number,
-    properties: ?NodeProperties | ?EquipmentInfoProperties
+    properties: NodeProperties | EquipmentInfoProperties | any
   ) => {
     const featureIdString = featureId.toString();
     const { routerHistory } = this.props;
 
     // show equipment inside their place details
     let routeName = 'placeDetail';
-    const params = this.getCurrentParams();
+    const params = this.getCurrentParams() as any;
 
     params.id = featureIdString;
     delete params.eid;
@@ -480,6 +479,7 @@ class App extends React.Component<Props, State> {
     if (this.state.activeCluster) {
       const index = findIndex(
         this.state.activeCluster.features,
+        // @ts-ignore
         f => (f.id || f._id) === featureIdString
       );
       activeCluster = index !== -1 ? this.state.activeCluster : null;
@@ -499,14 +499,14 @@ class App extends React.Component<Props, State> {
       this.setState({ extent });
     }
 
-    const params = this.getCurrentParams();
+    const params = this.getCurrentParams() as any;
     params.id = eventId;
     this.props.routerHistory.push('mappingEventDetail', params);
   };
 
   showCluster = (cluster: Cluster) => {
     this.setState({ activeCluster: cluster }, () => {
-      const params = this.getCurrentParams();
+      const params = this.getCurrentParams() as any;
       delete params.id;
       delete params.eid;
       this.props.routerHistory.push('map', params);
@@ -519,7 +519,7 @@ class App extends React.Component<Props, State> {
 
   onAccessibilityFilterButtonClick = (filter: PlaceFilter) => {
     let { routeName } = this.props;
-    const params = this.getCurrentParams();
+    const params = this.getCurrentParams() as any;
 
     delete params.accessibility;
     delete params.toilet;
@@ -535,8 +535,8 @@ class App extends React.Component<Props, State> {
     this.props.routerHistory.push(routeName, params);
   };
 
-  onSearchResultClick = (feature: SearchResultFeature, wheelmapFeature: ?WheelmapFeature) => {
-    const params = this.getCurrentParams();
+  onSearchResultClick = (feature: SearchResultFeature, wheelmapFeature: WheelmapFeature | null) => {
+    const params = this.getCurrentParams() as any;
     let routeName = 'map';
 
     if (wheelmapFeature) {
@@ -583,7 +583,7 @@ class App extends React.Component<Props, State> {
     });
   };
 
-  onExitPhotoUploadFlow = (notification?: string, photoFlowErrorMessage: ?string) => {
+  onExitPhotoUploadFlow = (notification: string = null, photoFlowErrorMessage: string | null = null) => {
     this.setState({
       photoFlowErrorMessage,
       isSearchBarVisible: !isOnSmallViewport(),
@@ -675,7 +675,7 @@ class App extends React.Component<Props, State> {
   };
 
   getCurrentParams() {
-    const params = {};
+    const params = {} as any;
     const {
       app,
       category,
@@ -850,7 +850,7 @@ class App extends React.Component<Props, State> {
     }
   };
 
-  onSearchQueryChange = (newSearchQuery: ?string) => {
+  onSearchQueryChange = (newSearchQuery: string | null) => {
     const params = this.getCurrentParams();
 
     if (!newSearchQuery || newSearchQuery.length === 0) {
@@ -891,6 +891,7 @@ class App extends React.Component<Props, State> {
     const isNodeRoute = Boolean(this.props.featureId);
     const isNodeToolbarDisplayed = this.isNodeToolbarDisplayed();
     const mapMoveDate = savedState.map.lastMoveDate;
+    // @ts-ignore
     const wasMapMovedRecently = mapMoveDate && new Date() - mapMoveDate < config.locateTimeout;
 
     const shouldLocateOnStart = !isSpecificLatLonProvided && !isNodeRoute && !wasMapMovedRecently;
@@ -963,7 +964,7 @@ class App extends React.Component<Props, State> {
       activeCluster: this.state.activeCluster,
 
       app: this.props.app,
-    };
+    } as any;
 
     return (
       <RouteProvider

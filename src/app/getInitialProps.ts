@@ -1,4 +1,3 @@
-// @flow
 import UAParser from 'ua-parser-js';
 
 import { getAvailableTranslationsByPreference, Translations } from '../lib/i18n';
@@ -19,7 +18,7 @@ import { App } from '../lib/App';
 import { appCache } from '../lib/cache/AppCache';
 import CategoryLookupTablesCache from '../lib/cache/CategoryLookupTablesCache';
 import { mappingEventsCache } from '../lib/cache/MappingEventsCache';
-import { MappingEvents } from '../lib/MappingEvent';
+import { MappingEvents, MappingEvent } from '../lib/MappingEvent';
 
 import SearchData from './SearchData';
 import PlaceDetailsData from './PlaceDetailsData';
@@ -27,6 +26,7 @@ import MapData from './MapData';
 import CreatePlaceData from './CreatePlaceData';
 import ContributionThanksData from './ContributionThanksData';
 import MappingEventDetailData from './MappingEventDetailData';
+import { ReactElement } from 'react';
 
 export type RenderContext = {
   app: App,
@@ -65,7 +65,8 @@ export type DataTableEntry<Props> = {
   getHead?: (
     props: Props & RenderContext,
     baseUrl?: string
-  ) => Promise<React$Element<any>> | React$Element<any>,
+  ) => Promise<ReactElement<any>> | ReactElement<any>,
+  getMappingEvent?: (eventId: string, renderContext: RenderContext) => MappingEvent | undefined,
   storeInitialRouteProps?: (props: Props, appToken: string) => void,
 };
 
@@ -159,7 +160,7 @@ export async function getInitialRenderContext({
   appId?: string,
   embedded?: string,
   embedToken?: string,
-  [key: string]: string | null,
+  [key: string]: any,
 }): Promise<RenderContext> {
   // flow type is not synced with actual APIs
   // $FlowFixMe invalid type definition without userAgentString argument
@@ -219,7 +220,7 @@ export async function getInitialRenderContext({
     (clientSideConfiguration ? clientSideConfiguration.excludeSourceIds : []);
 
   // assign to local variable for better flow errors
-  const renderContext: RenderContext = {
+  const renderContext = {
     userAgent,
     translations,
     rawCategoryLists,

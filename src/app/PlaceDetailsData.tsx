@@ -50,7 +50,7 @@ function fetchFeature(
   appToken: string,
   useCache: boolean,
   disableWheelmapSource?: boolean
-): ?Promise<Feature> {
+): Promise<Feature> | null {
   const isWheelmap = isWheelmapFeatureId(featureId);
 
   if (isWheelmap) {
@@ -73,7 +73,7 @@ function fetchEquipment(
 
 async function fetchSourceWithLicense(
   featureId: string | number,
-  featurePromise: ?Promise<Feature>,
+  featurePromise: Promise<Feature> | null,
   appToken: string,
   useCache: boolean
 ): Promise<SourceWithLicense[]> {
@@ -138,8 +138,8 @@ function fetchPhotos(
 
 function fetchToiletsNearby(
   renderContext: RenderContext,
-  featurePromise: ?Promise<Feature>
-): Promise<Feature[]> {
+  featurePromise: Promise<Feature> | null
+): Promise<Feature[]> | Feature[] {
   return featurePromise
     ? featurePromise.then(feature => {
         return fetchToiletsNearFeature(
@@ -225,12 +225,12 @@ const PlaceDetailsData: DataTableEntry<PlaceDetailsProps> = {
     // inject feature
     const isWheelmap = isWheelmapFeatureId(featureId);
     if (isWheelmap) {
-      wheelmapFeatureCache.injectFeature(((feature: any): WheelmapFeature));
+      wheelmapFeatureCache.injectFeature(feature as any);
     } else {
-      accessibilityCloudFeatureCache.injectFeature(((feature: any): AccessibilityCloudFeature));
+      accessibilityCloudFeatureCache.injectFeature(feature as any);
     }
 
-    const sourceWithLicenseArray = ((sources: any): SourceWithLicense[]);
+    const sourceWithLicenseArray: SourceWithLicense[] = sources;
     // inject sources & licenses
     sourceWithLicenseArray.forEach(sourceWithLicense => {
       const { license, source } = sourceWithLicense;
@@ -251,13 +251,14 @@ const PlaceDetailsData: DataTableEntry<PlaceDetailsProps> = {
     if (!toiletsNearby) {
       // fetch toilets for client
       const featurePromise = feature instanceof Promise ? feature : Promise.resolve(feature);
-      toiletsNearby = fetchToiletsNearby(Promise.resolve(props), featurePromise);
+      toiletsNearby = fetchToiletsNearby(Promise.resolve(props) as any, featurePromise);
     }
 
     return { ...props, toiletsNearby };
   },
 
   getHead(props, baseUrl) {
+    // @ts-ignore
     const { feature, photos, app, categories, equipmentInfo } = props;
     const { textContent, meta } = app.clientSideConfiguration;
 
@@ -291,7 +292,7 @@ const PlaceDetailsData: DataTableEntry<PlaceDetailsProps> = {
           extras.push(
             ...['longitude', 'latitude'].map((property, i) => (
               <meta
-                content={coordinates[i]}
+                content={coordinates[i] as any}
                 property={`place:location:${property}`}
                 key={`place:location:${property}`}
               />

@@ -18,6 +18,9 @@ export type AttributeChangedTrackingEvent = {
   newValue: any,
   category: string,
   parentCategory?: string,
+  placeInfoId?: string | number,
+  organizationId?: string,
+  appId?: string
 };
 
 export type SurveyCompletedTrackingEvent = {
@@ -35,16 +38,16 @@ export type MappingEventJoinedTrackingEvent = {
   joinedMappingEventId: string,
   joinedVia: 'url' | 'button',
   query: Query,
-  emailAddress?: ?string,
-  invitationToken?: ?string,
+  emailAddress?: string | null,
+  invitationToken?: string | null,
 };
 
 export type MappingEventLeftTrackingEvent = {
   type: 'MappingEventLeft',
   leftMappingEventId: string,
   query: Query,
-  emailAddress?: ?string,
-  invitationToken?: ?string,
+  emailAddress?: string | null,
+  invitationToken?: string | null,
 };
 
 export type TrackingEvent =

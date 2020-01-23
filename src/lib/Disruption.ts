@@ -1,4 +1,4 @@
-import { Point } from 'geojson-flow';
+import { Point } from 'geojson';
 import { FeatureCollection } from './Feature';
 import { CategoryString } from './EquipmentInfo';
 

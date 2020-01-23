@@ -87,7 +87,7 @@ const SearchData: DataTableEntry<SearchProps> = {
     };
   },
 
-  getAdditionalPageComponentProps(props, isServer) {
+  getAdditionalPageComponentProps(props: any, isServer) {
     if (isServer) {
       return props;
     }
@@ -110,6 +110,7 @@ const SearchData: DataTableEntry<SearchProps> = {
 
       // Fetch all wheelmap features when on server.
       if (isServer) {
+        // @ts-ignore
         wheelmapFeatures = await Promise.all(wheelmapFeatures);
       }
 

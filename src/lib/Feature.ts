@@ -7,7 +7,7 @@ import isEqual from 'lodash/isEqual';
 import isArray from 'lodash/isArray';
 import uniq from 'lodash/uniq';
 import isPlainObject from 'lodash/isPlainObject';
-import { GeometryObject } from 'geojson-flow';
+import { GeometryObject } from 'geojson';
 import { translatedStringFromObject } from './i18n';
 
 import useImperialUnits from './useImperialUnits';
@@ -45,21 +45,13 @@ function parseStatusString(statusString, allowedStatuses) {
     : [...allowedStatuses];
 }
 
-/*
-TODO: check wtf this is supposed to be
-
-export function getAccessibilityFilterFrom(statusString: ?string): YesNoLimitedUnknown[] {
-  const result = parseStatusString(statusString, yesNoLimitedUnknownArray);
-
-  return ((result: any): YesNoLimitedUnknown[]);
+export function getAccessibilityFilterFrom(statusString: string | null): YesNoLimitedUnknown[] {
+  return parseStatusString(statusString, yesNoLimitedUnknownArray);
 }
 
-export function getToiletFilterFrom(toiletString: ?string): YesNoUnknown[] {
-  const result = parseStatusString(toiletString, yesNoUnknownArray);
-
-  return ((result: any): YesNoUnknown[]);
+export function getToiletFilterFrom(toiletString: string | null): YesNoUnknown[] {
+  return parseStatusString(toiletString, yesNoUnknownArray);
 }
-*/
 
 /**
  * @returns `true` if the given array of accessibility values is actually filtering PoIs
@@ -129,7 +121,7 @@ export interface WheelmapProperties {
 };
 
 export type WheelmapFeature = {
-  type: 'WheelmapFeature', // todo: check if possible
+  type: 'Feature',
   geometry: GeometryObject | null,
   properties: WheelmapProperties | null,
   id: number,
@@ -163,10 +155,11 @@ export interface AccessibilityCloudProperties {
   isWorking?: boolean,
   phone: string | null,
   phoneNumber: string | null,
+  placeWebsiteUrl?: string | null
 };
 
 export type AccessibilityCloudFeature = {
-  type: 'AccessibilityCloudFeature',
+  type: 'Feature',
   name: string | null,
   geometry: GeometryObject | null,
   properties: AccessibilityCloudProperties,
@@ -265,8 +258,26 @@ export function isWheelmapFeatureId(id: string | number | null | void): boolean 
   return typeof id !== 'undefined' && isNumeric(id);
 }
 
-export function isWheelmapFeature(feature: Feature | any): boolean {
-  return feature && feature.properties && feature.properties.id && isNumeric(feature.id);
+export function isWheelmapFeature(feature: Feature): feature is WheelmapFeature {
+  return isWheelmapFeatureId(feature['id'])
+}
+
+export function wheelmapFeatureFrom(feature: Feature | null): WheelmapFeature | null {
+  if (isWheelmapFeature(feature)) {
+    return feature;
+  }
+  return null;
+}
+
+export function accessibilityCloudFeatureFrom(feature: Feature | null): AccessibilityCloudFeature | null {
+  if (!isWheelmapFeature(feature)) {
+    return feature;
+  }
+  return null;
+}
+
+export function isWheelmapProperties(properties: WheelmapProperties | AccessibilityCloudProperties): properties is WheelmapProperties {
+  return isWheelmapFeatureId(properties['id'])
 }
 
 export function sourceIdsForFeature(feature: Feature | any): string[] {
@@ -294,7 +305,7 @@ export function sourceIdsForFeature(feature: Feature | any): string[] {
 
 export function convertResponseToWheelmapFeature(node: WheelmapProperties): WheelmapFeature {
   return {
-    type: 'WheelmapFeature',
+    type: 'Feature',
     properties: node,
     id: node.id,
     geometry: {
@@ -574,6 +585,7 @@ export function removeNullAndUndefinedFields(something: any): any {
 export function normalizedCoordinatesForFeature(feature: Feature): [number, number] | null {
   const geometry = feature ? feature.geometry : null;
   if (!(geometry instanceof Object)) return null;
+  // @ts-ignore
   const coordinates = geometry ? geometry.coordinates : null;
   if (!(coordinates instanceof Array) || coordinates.length !== 2) return null;
   // @ts-ignore

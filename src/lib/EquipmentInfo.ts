@@ -1,5 +1,5 @@
 import { t } from 'ttag';
-import { Point } from 'geojson-flow';
+import { Point } from 'geojson';
 
 import { FeatureCollection, YesNoLimitedUnknown } from './Feature';
 import { currentLocales, translatedStringFromObject } from './i18n';

@@ -123,6 +123,7 @@ export function addTranslationsToTTag(translations: Translations[]) {
   // register with ttag
   for (const t of translations) {
     const locale = localeFromString(t.headers.language);
+    // @ts-ignore
     addLocale(locale.string, t);
     localesToUse.push(locale);
   }
@@ -155,9 +156,9 @@ export function expandedPreferredLocales(locales: Locale[], overriddenLocale?: L
   return uniqBy(overriddenWithCountryCombinations, locale => locale.string);
 }
 
-export function translatedStringFromObject(string: LocalizedString): string | void {
+export function translatedStringFromObject(string: LocalizedString): string | null {
   if (typeof string === 'undefined' || string === null) {
-    return;
+    return null;
   }
 
   if (typeof string === 'string') return string;
@@ -192,13 +193,13 @@ export function translatedStringFromObject(string: LocalizedString): string | vo
     if (foundLocale) return string[foundLocale];
   }
 
-  return;
+  return null;
 }
 
 function getTranslationsForLocale(
   translations: LocalesToTranslations,
   locale: Locale
-): Translations | void {
+): Translations | undefined {
   // In our translations JSON, we might have underscores, not dashes. Support both variants.
   return translations[locale.string] || translations[locale.transifexLanguageIdentifier];
 }

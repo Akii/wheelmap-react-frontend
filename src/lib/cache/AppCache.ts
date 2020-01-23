@@ -7,6 +7,7 @@ import { ClientSideConfiguration, LinkDescription } from '../ClientSideConfigura
 
 import { App } from '../App';
 import env from '../env';
+import { LinkData } from '../../App';
 
 type AppApiData = {
   _id: string,
@@ -17,7 +18,7 @@ type AppApiData = {
   tokenString: string,
   related?: {
     appLinks?: {
-      [key: string]: LinkDescription,
+      [key: string]: LinkData,
     },
   },
 };
@@ -32,7 +33,7 @@ export default class AppCache extends URLDataCache<AppApiData> {
       // extract the appLinks from the related property and put them under
       // clientSideConfiguration.customMainMenuLinks
       const { related, ...appDataWithoutRelatedProp } = appData;
-      const customMainMenuLinks: LinkDescription[] = values(get(related, 'appLinks') || {});
+      const customMainMenuLinks: LinkData[] = values(get(related, 'appLinks') || {});
 
       return {
         ...appDataWithoutRelatedProp,

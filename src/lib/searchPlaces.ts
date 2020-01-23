@@ -1,5 +1,5 @@
 import includes from 'lodash/includes';
-import { Point } from 'geojson-flow';
+import { Point } from 'geojson';
 
 import { currentLocales } from './i18n';
 import { globalFetchManager } from './FetchManager';

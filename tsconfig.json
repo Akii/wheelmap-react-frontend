@@ -6,6 +6,12 @@
     "module": "commonjs",
     "target": "es6",
     "jsx": "react",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "paths": {
+      "*" : [
+        "types"
+      ]
+    }
   }
 }

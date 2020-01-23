@@ -114,7 +114,7 @@ function calculateWheelchairAccessibility(propertiesArray: NodeProperties[]) {
   return { definedCount, averageRatingForDefined, clampedDefinedRatio };
 }
 
-const definedAccessibilityMapping = [['yes', 0.8], ['limited', 0.2], ['no', 0]];
+const definedAccessibilityMapping: [YesNoLimitedUnknown, number][] = [['yes', 0.8], ['limited', 0.2], ['no', 0]];
 
 function getWheelchairAccessibility(
   definedCount: number,
@@ -132,7 +132,7 @@ function getWheelchairAccessibility(
   return 'unknown';
 }
 
-const definedAccessibilityBackgroundColorScale = scaleLinear()
+const definedAccessibilityBackgroundColorScale = scaleLinear<string>()
   .domain([0, 0.2, 0.4, 0.6, 0.8, 1])
   .range([
     colors.markers.background.no,
