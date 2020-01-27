@@ -29,7 +29,8 @@ export default class URLDataCache<T> {
   }
 
   fetch(url: string): Promise<T> {
-    return self.fetch(url).then((response: Response) => {
+    // @ts-ignore
+    return this.constructor.fetch(url).then((response: Response) => {
       if (response.status === 200) {
         // @ts-ignore
         return this.constructor.getDataFromResponse(response);

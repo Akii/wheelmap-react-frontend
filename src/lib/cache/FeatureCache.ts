@@ -135,7 +135,7 @@ export default class FeatureCache<FeatureType, FeatureCollectionType> extends Ev
         target: this,
         feature,
       });
-      
+
       // @ts-ignore
       this.dispatchEvent(changeEvent);
 

@@ -11,7 +11,7 @@ class Router {
     this.compiledRouteCache = new Map();
   }
 
-  match(pathname) {
+  public match(pathname) {
     for (let i = 0; i < this.routes.length; i++) {
       const route = this.routes[i];
       const compiledRoute = this.getCompiledRoute(route);
@@ -40,7 +40,7 @@ class Router {
     return null;
   }
 
-  generatePath(name, params = {}) {
+  public generatePath(name, params = {}) {
     const route = this.getRoute(name, true);
 
     if (!route) {
@@ -69,7 +69,7 @@ class Router {
     return path;
   }
 
-  getParams(route, routeParams) {
+  public getParams(route, routeParams) {
     const compiledRoute = this.getCompiledRoute(route);
     const params = {};
     const query = {};
@@ -89,7 +89,7 @@ class Router {
     return { params, query };
   }
 
-  getRoute(nameOrPath, strict = false) {
+  public getRoute(nameOrPath, strict = false) {
     const route = this.routes.find(route => route.name === nameOrPath || route.path === nameOrPath);
     if (strict && !route) {
       console.log(`Could not find route ${nameOrPath} in router configuration`);
@@ -99,7 +99,7 @@ class Router {
     return route;
   }
 
-  getCompiledRoute(route) {
+  public getCompiledRoute(route) {
     let compiledRoute = this.compiledRouteCache.get(route.path);
 
     if (!compiledRoute) {

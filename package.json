@@ -143,13 +143,13 @@
     "source-map-explorer": "^1.5.0",
     "source-map-loader": "^0.2.4",
     "ts-loader": "^6.2.1",
-    "ts-node": "^8.5.2",
+    "ts-node": "^8.6.2",
     "typescript": "^3.7.2",
     "url-loader": "^1.1.2"
   },
   "scripts": {
-    "dev": "nodemon --icu-data-dir=node_modules/full-icu --inspect --watch src/server src/server/server.js",
-    "start": "pwd; env; cat .env; NODE_ENV=production node --icu-data-dir=node_modules/full-icu src/server/server.js",
+    "dev": "nodemon --exec 'ts-node' --watch src/server src/server/server.js",
+    "start": "pwd; env; cat .env; NODE_ENV=production node --icu-data-dir=node_modules/full-icu src/server/server.js --exec 'ts-node'",
     "build": "rm -rf src/.next/* && next build src/",
     "analyze": "source-map-explorer build/static/js/main.*",
     "test": "node scripts/test.js --env=jsdom",

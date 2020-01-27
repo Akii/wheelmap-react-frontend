@@ -324,13 +324,15 @@ export class Toolbar extends React.Component<Props, State> {
   };
 
   render() {
-    const _window: any = window
     const xModels = ['iPhone10,3', 'iPhone10,6', 'x86_64'];
     const isIphoneX =
-      typeof _window !== 'undefined' &&
-      _window.device &&
-      _window.device.model &&
-      includes(xModels, _window.device.model);
+      typeof window !== 'undefined' &&
+      // @ts-ignore
+      window.device &&
+      // @ts-ignore
+      window.device.model &&
+      // @ts-ignore
+      includes(xModels, window.device.model);
     const classNames = [
       'toolbar',
       isIphoneX ? 'toolbar-iphone-x' : null,

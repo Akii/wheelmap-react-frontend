@@ -43,7 +43,9 @@ function fontSize(size: Size) {
 class Figure extends React.Component<Partial<Props>> {
   render() {
     return (
-      <figure className={this.props.className}></figure>
+      <figure className={this.props.className}>
+        {this.props.children}
+      </figure>
     );
   }
 }

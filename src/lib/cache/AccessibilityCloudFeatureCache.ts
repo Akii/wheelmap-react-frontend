@@ -45,7 +45,7 @@ export default class AccessibilityCloudFeatureCache extends FeatureCache<
       }
     });
 
-    this.cacheFeature(feature, response);
+    super.cacheFeature(feature, response);
   }
 
   reportPlace(
