@@ -245,7 +245,7 @@ export default class PhotoUploadCaptchaToolbar extends React.Component<Props, St
 
   inputField = React.createRef<HTMLInputElement>();
   backLink = React.createRef<HTMLButtonElement>();
-  checkCaptchaTimer: number | null;
+  checkCaptchaTimer: number | any | null;
   toolbar = React.createRef<ToolbarClass>();
 
   componentDidMount() {

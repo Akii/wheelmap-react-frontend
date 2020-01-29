@@ -1,17 +1,19 @@
 declare module 'leaflet' {
-  export const control = any;
-  export const Browser = any;
-  export const Util = any;
-  export const Control = any;
-  export const DomUtil = any;
-  export const DomEvent = any;
-  export const Map = any;
-  export class CircleMarker {};
+  export const control: any;
+  export const Browser: any;
+  export const Util: any;
+  export const Control: any;
+  export const DomUtil: any;
+  export const DomEvent: any;
+  export const Map: any;
+  export const Handler: any;
+
+  export class CircleMarker {}
 
   export type Map = any;
   export class LatLng {
     constructor(a: any, b: any);
-  };
+  }
   export type Layer = any;
 
   export class LatLngBounds {
@@ -24,7 +26,7 @@ declare module 'leaflet' {
     constructor(obtions: any);
 
     public on(type: string, f: any): void;
-  };
+  }
 
   export class Marker extends LayerGroup {
     constructor(latlng: LatLng, options?: any);
@@ -35,7 +37,7 @@ declare module 'leaflet' {
     protected setIcon(icon: any): void;
     protected setOpacity(n: number): void;
     protected getLatLng(): LatLng;
-  };
+  }
 
   export class LayerGroup {
     constructor(options?: any);
@@ -45,7 +47,7 @@ declare module 'leaflet' {
     public hasLayer(layerGroup: LayerGroup): boolean;
     public getLayers(): LayerGroup;
     public clearLayers(): void;
-  };
+  }
 
   export type TileLayerOptions = any;
 
@@ -67,7 +69,7 @@ declare module 'leaflet' {
     protected fire(a: string, b: any): void;
     protected _getSubdomain(coords: any): string;
     protected _getZoomForUrl(): any;
-  };
+  }
 
   export class Point {
     public readonly x: number;
